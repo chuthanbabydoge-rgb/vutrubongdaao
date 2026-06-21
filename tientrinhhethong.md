@@ -9,7 +9,7 @@
 
 | Giai đoạn | Mô tả | Trạng thái | Tiến độ |
 |-----------|-------|------------|---------|
-| Phase 1 | Nền tảng Web App | 🔄 Đang xây dựng | 40% |
+| Phase 1 | Nền tảng Web App | 🔄 Đang xây dựng | 60% |
 | Phase 2 | Hệ thống Giải đấu & Đội bóng | ⏳ Chờ | 0% |
 | Phase 3 | Mô phỏng Trận đấu | ⏳ Chờ | 0% |
 | Phase 4 | VR/AR/XR Integration | ⏳ Chờ | 0% |
@@ -29,18 +29,18 @@
 - [ ] Seed dữ liệu ban đầu (giải đấu, đội bóng, cầu thủ)
 
 ### 1.2 Frontend Web App
-- [ ] Trang chủ / Landing page (hero, stats overview, live matches)
-- [ ] Trang đăng ký / đăng nhập tài khoản
-- [ ] Dashboard người dùng (sau khi đăng nhập)
-- [ ] Trang danh sách Giải đấu (lọc theo khu vực, loại)
-- [ ] Trang chi tiết Giải đấu (bảng xếp hạng, vua phá lưới, lịch đấu)
-- [ ] Trang danh sách Đội bóng (tìm kiếm, lọc)
-- [ ] Trang chi tiết Đội bóng (cầu thủ, lịch sử, thống kê)
-- [ ] Trang chọn CLB tham gia (user chọn đội mình muốn đại diện)
-- [ ] Trang chi tiết Cầu thủ (thông số, phong độ)
-- [ ] Trang Lịch thi đấu / Kết quả
-- [ ] Trang chi tiết Trận đấu (events, timeline)
-- [ ] Profile người dùng (thành tích, đội đang đại diện)
+- [x] Trang chủ / Landing page (hero, stats overview, live matches)
+- [x] Trang đăng ký / đăng nhập tài khoản
+- [x] Dashboard người dùng (sau khi đăng nhập)
+- [x] Trang danh sách Giải đấu (lọc theo khu vực, loại)
+- [x] Trang chi tiết Giải đấu (bảng xếp hạng, vua phá lưới, lịch đấu)
+- [x] Trang danh sách Đội bóng (tìm kiếm, lọc)
+- [x] Trang chi tiết Đội bóng (cầu thủ, lịch sử, thống kê)
+- [x] Trang chọn CLB tham gia (user chọn đội mình muốn đại diện)
+- [x] Trang chi tiết Cầu thủ (thông số, phong độ)
+- [x] Trang Lịch thi đấu / Kết quả
+- [x] Trang chi tiết Trận đấu (events, timeline)
+- [x] Profile người dùng (thành tích, đội đang đại diện)
 
 ---
 

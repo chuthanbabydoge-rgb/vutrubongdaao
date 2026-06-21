@@ -7,9 +7,13 @@ import { Trophy, Activity, Users, Radio, ArrowRight } from "lucide-react";
 
 export default function Home() {
   const { data: stats } = useGetStatsOverview();
-  const { data: liveMatches } = useGetLiveMatches();
-  const { data: recentMatches } = useGetRecentMatches();
-  const { data: leagues } = useListLeagues();
+  const { data: liveMatchesRaw } = useGetLiveMatches();
+  const { data: recentMatchesRaw } = useGetRecentMatches();
+  const { data: leaguesRaw } = useListLeagues();
+
+  const liveMatches = Array.isArray(liveMatchesRaw) ? liveMatchesRaw : [];
+  const recentMatches = Array.isArray(recentMatchesRaw) ? recentMatchesRaw : [];
+  const leagues = Array.isArray(leaguesRaw) ? leaguesRaw : [];
 
   return (
     <div className="flex flex-col gap-16 pb-16">
@@ -76,7 +80,7 @@ export default function Home() {
       )}
 
       {/* Live Matches */}
-      {liveMatches && liveMatches.length > 0 && (
+      {liveMatches.length > 0 && (
         <section className="container space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl md:text-3xl font-black font-mono uppercase tracking-tighter flex items-center gap-3">
@@ -98,7 +102,7 @@ export default function Home() {
       )}
 
       {/* Top Leagues */}
-      {leagues && leagues.length > 0 && (
+      {leagues.length > 0 && (
         <section className="container space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl md:text-3xl font-black font-mono uppercase tracking-tighter flex items-center gap-3">
@@ -120,7 +124,7 @@ export default function Home() {
       )}
       
       {/* Recent Matches */}
-      {recentMatches && recentMatches.length > 0 && (
+      {recentMatches.length > 0 && (
         <section className="container space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl md:text-3xl font-black font-mono uppercase tracking-tighter flex items-center gap-3">
