@@ -17,6 +17,7 @@ import PlayerDetail from "@/pages/player-detail";
 import Matches from "@/pages/matches";
 import MatchDetail from "@/pages/match-detail";
 import VRGateway from "@/pages/vr-gateway";
+import VRStadium from "@/pages/vr-stadium";
 import Profile from "@/pages/profile";
 import PlaySetup from "@/pages/play-setup";
 import Play from "@/pages/play";
@@ -48,6 +49,7 @@ function Router() {
         <Route path="/matches" component={Matches} />
         <Route path="/matches/:id" component={MatchDetail} />
         <Route path="/vr-gateway" component={VRGateway} />
+        <Route path="/vr-stadium" component={VRStadium} />
         <Route path="/profile" component={Profile} />
         <Route path="/play/setup" component={PlaySetup} />
         <Route path="/play" component={Play} />

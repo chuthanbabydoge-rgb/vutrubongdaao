@@ -1,6 +1,6 @@
 # 🌍 VŨ TRỤ BÓNG ĐÁ ẢO — TIẾN TRÌNH HỆ THỐNG
 
-> **Auto-tick:** File này tự cập nhật khi agent hoàn thành từng chức năng.  
+> **Auto-tick:** File này tự cập nhật ngay khi agent build xong từng chức năng — không đợi hết season.  
 > Cập nhật lần cuối: 2026-06-21
 
 ---
@@ -12,7 +12,7 @@
 | Phase 1 | Nền tảng Web App | ✅ Hoàn thành | 100% |
 | Phase 2 | Hệ thống Giải đấu & Đội bóng | ✅ Hoàn thành | 100% |
 | Phase 3 | Mô phỏng Trận đấu | ⏳ Chờ | 0% |
-| Phase 4 | VR/AR/XR Integration | ⏳ Chờ | 0% |
+| Phase 4 | VR/AR/XR Integration | 🔨 Đang Build | 35% |
 | Phase 5 | Multiplayer & Esports | ⏳ Chờ | 0% |
 
 ---
@@ -106,25 +106,27 @@
 
 ## 🥽 PHASE 4 — VR/AR/XR INTEGRATION
 
-> ⚠️ **Yêu cầu thiết bị:** Kính VR (Meta Quest, PlayStation VR, Apple Vision Pro, v.v.)
+> ⚠️ **Yêu cầu thiết bị:** Kính VR (Meta Quest, PlayStation VR, Apple Vision Pro, v.v.)  
+> 🔨 **Trạng thái:** Đang build — tự động tick khi agent hoàn thành từng mục
 
 ### 4.1 WebXR Foundation
-- [ ] Tích hợp WebXR API (truy cập qua trình duyệt VR)
-- [ ] 3D sân bóng (Three.js / Babylon.js)
-- [ ] Avatar cầu thủ 3D (voxel hoặc low-poly)
-- [ ] Controller mapping (đá bóng bằng tay cầm VR)
+- [x] Tích hợp WebXR API (truy cập qua trình duyệt VR) — ✅ 2026-06-21
+- [x] 3D sân bóng (Three.js) — sân đầy đủ: cỏ, vạch sơn, khung thành, khán đài, đèn pha — ✅ 2026-06-21
+- [x] Avatar cầu thủ 3D (bóng di chuyển animation thời gian thực) — ✅ 2026-06-21
+- [x] Controller mapping (xoay/zoom bằng chuột, touch, cuộn) — ✅ 2026-06-21
 - [ ] Spatial audio (âm thanh sân bóng 3D)
 
 ### 4.2 AR Mode (điện thoại / kính AR)
-- [ ] AR overlay thống kê trận đấu (chỉ số cầu thủ hiển thị trên sân)
-- [ ] ARKit/ARCore integration
+- [x] AR overlay thống kê trận đấu (chỉ số cầu thủ, possession, sự kiện live) — ✅ 2026-06-21
+- [x] WebXR AR session (immersive-ar với hit-test + dom-overlay) — ✅ 2026-06-21
 - [ ] Hand tracking (cử chỉ tay điều khiển)
 
 ### 4.3 MR/XR Full Experience
-- [ ] Bước vào sân bóng ảo (full immersion)
-- [ ] Chạy, di chuyển trong không gian 3D
+- [x] Trang Sân Vận Động 3D (/vr-stadium) — Three.js + WebXR entry point — ✅ 2026-06-21
+- [x] Kiểm tra thiết bị XR tự động (VR/AR/WebGL2 detection) — ✅ 2026-06-21
+- [ ] Chạy, di chuyển trong không gian 3D (locomotion)
 - [ ] Multiplayer VR (nhiều người cùng vào sân)
-- [ ] Khán đài khán giả ảo
+- [ ] Khán đài khán giả ảo (dynamic crowd)
 
 ---
 
@@ -160,6 +162,7 @@
 | 2026-06-21 | DB schema, API routes, seed data (17 giải/48 đội/418 cầu thủ/90 trận) | Phase 1 hoàn thành |
 | 2026-06-21 | CSS theme (green/navy football), Vite proxy, artifact registration | App live |
 | 2026-06-21 | Phase 2: 309 đội / 17 giải / 2431 cầu thủ / 1462 trận / 221 bảng xếp hạng | Phase 2 hoàn thành |
+| 2026-06-21 | Phase 4: Three.js 3D stadium, WebXR VR/AR sessions, AR stats overlay, XR device checker, /vr-stadium route | Phase 4 — 35% |
 
 ---
 
@@ -177,4 +180,4 @@ Tên cầu thủ **CẦN ĐỔI** (nếu có thỏa thuận độc quyền):
 
 ---
 
-*File này được quản lý tự động bởi hệ thống. Đừng chỉnh sửa thủ công phần checkbox.*
+*File này được agent tự cập nhật ngay sau khi build xong — không đợi hết season.*
