@@ -7,6 +7,14 @@ import { MatchCard } from "@/components/ui/match-card";
 import { Trophy, Users, Calendar, ArrowLeft, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+const regionLabel: Record<string, string> = {
+  Europe: "Châu Âu",
+  Asia: "Châu Á",
+  Americas: "Châu Mỹ",
+  Africa: "Châu Phi",
+  International: "Quốc Tế",
+};
+
 export default function LeagueDetail() {
   const { id } = useParams<{ id: string }>();
   const leagueId = parseInt(id ?? "0");
@@ -25,14 +33,14 @@ export default function LeagueDetail() {
   );
 
   if (!league) return (
-    <div className="container py-12 text-center text-muted-foreground font-mono">League not found</div>
+    <div className="container py-12 text-center text-muted-foreground font-mono">Không tìm thấy giải đấu.</div>
   );
 
   return (
     <div className="container py-12 space-y-8">
       <Link href="/leagues">
         <Button variant="ghost" className="font-mono text-sm uppercase -ml-2">
-          <ArrowLeft className="w-4 h-4 mr-2" /> All Leagues
+          <ArrowLeft className="w-4 h-4 mr-2" /> Tất Cả Giải Đấu
         </Button>
       </Link>
 
@@ -44,30 +52,30 @@ export default function LeagueDetail() {
             <h1 className="text-4xl font-black font-mono uppercase tracking-tighter">{league.name}</h1>
           </div>
           <div className="flex items-center gap-3 flex-wrap">
-            <Badge variant="outline" className="font-mono">{league.region}</Badge>
+            <Badge variant="outline" className="font-mono">{regionLabel[league.region] ?? league.region}</Badge>
             {league.country && (
               <Badge variant="outline" className="font-mono flex items-center gap-1">
                 <Globe className="w-3 h-3" />{league.country}
               </Badge>
             )}
-            <Badge variant="outline" className="font-mono">{league.type === "national" ? "National" : "Club"}</Badge>
-            <span className="text-muted-foreground font-mono text-sm">Season {league.season}</span>
+            <Badge variant="outline" className="font-mono">{league.type === "national" ? "Quốc Gia" : "CLB"}</Badge>
+            <span className="text-muted-foreground font-mono text-sm">Mùa {league.season}</span>
           </div>
           {league.description && <p className="text-muted-foreground max-w-xl">{league.description}</p>}
         </div>
         <div className="flex gap-4">
           <div className="text-center p-4 bg-card/40 rounded-lg border border-border/40">
             <div className="text-2xl font-black font-mono">{(teams ?? []).length}</div>
-            <div className="text-xs text-muted-foreground uppercase tracking-wider">Teams</div>
+            <div className="text-xs text-muted-foreground uppercase tracking-wider">Đội Bóng</div>
           </div>
         </div>
       </div>
 
       <Tabs defaultValue="standings" className="space-y-6">
         <TabsList className="bg-card/40 border border-border/40">
-          <TabsTrigger value="standings" className="font-mono uppercase text-xs">Standings</TabsTrigger>
-          <TabsTrigger value="teams" className="font-mono uppercase text-xs">Teams</TabsTrigger>
-          <TabsTrigger value="matches" className="font-mono uppercase text-xs">Fixtures</TabsTrigger>
+          <TabsTrigger value="standings" className="font-mono uppercase text-xs">Bảng Xếp Hạng</TabsTrigger>
+          <TabsTrigger value="teams" className="font-mono uppercase text-xs">Đội Bóng</TabsTrigger>
+          <TabsTrigger value="matches" className="font-mono uppercase text-xs">Lịch Thi Đấu</TabsTrigger>
         </TabsList>
 
         {/* STANDINGS */}
@@ -78,16 +86,16 @@ export default function LeagueDetail() {
                 <thead>
                   <tr className="border-b border-border/40 bg-card/60">
                     <th className="text-left py-3 px-4 text-muted-foreground font-bold uppercase text-xs tracking-wider w-8">#</th>
-                    <th className="text-left py-3 px-4 text-muted-foreground font-bold uppercase text-xs tracking-wider">Team</th>
-                    <th className="text-center py-3 px-3 text-muted-foreground font-bold uppercase text-xs tracking-wider">P</th>
-                    <th className="text-center py-3 px-3 text-muted-foreground font-bold uppercase text-xs tracking-wider">W</th>
-                    <th className="text-center py-3 px-3 text-muted-foreground font-bold uppercase text-xs tracking-wider">D</th>
-                    <th className="text-center py-3 px-3 text-muted-foreground font-bold uppercase text-xs tracking-wider">L</th>
-                    <th className="text-center py-3 px-3 text-muted-foreground font-bold uppercase text-xs tracking-wider">GF</th>
-                    <th className="text-center py-3 px-3 text-muted-foreground font-bold uppercase text-xs tracking-wider">GA</th>
-                    <th className="text-center py-3 px-3 text-muted-foreground font-bold uppercase text-xs tracking-wider">GD</th>
-                    <th className="text-center py-3 px-4 text-muted-foreground font-bold uppercase text-xs tracking-wider">Pts</th>
-                    <th className="text-center py-3 px-4 text-muted-foreground font-bold uppercase text-xs tracking-wider hidden md:table-cell">Form</th>
+                    <th className="text-left py-3 px-4 text-muted-foreground font-bold uppercase text-xs tracking-wider">Đội</th>
+                    <th className="text-center py-3 px-3 text-muted-foreground font-bold uppercase text-xs tracking-wider">Tr</th>
+                    <th className="text-center py-3 px-3 text-muted-foreground font-bold uppercase text-xs tracking-wider">T</th>
+                    <th className="text-center py-3 px-3 text-muted-foreground font-bold uppercase text-xs tracking-wider">H</th>
+                    <th className="text-center py-3 px-3 text-muted-foreground font-bold uppercase text-xs tracking-wider">B</th>
+                    <th className="text-center py-3 px-3 text-muted-foreground font-bold uppercase text-xs tracking-wider">BT</th>
+                    <th className="text-center py-3 px-3 text-muted-foreground font-bold uppercase text-xs tracking-wider">BB</th>
+                    <th className="text-center py-3 px-3 text-muted-foreground font-bold uppercase text-xs tracking-wider">HS</th>
+                    <th className="text-center py-3 px-4 text-muted-foreground font-bold uppercase text-xs tracking-wider">Điểm</th>
+                    <th className="text-center py-3 px-4 text-muted-foreground font-bold uppercase text-xs tracking-wider hidden md:table-cell">Phong Độ</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -111,7 +119,9 @@ export default function LeagueDetail() {
                         <div className="flex gap-1 justify-center">
                           {(s.form ?? "").split("").map((f, i) => (
                             // eslint-disable-next-line react/no-array-index-key
-                            <span key={i} className={`w-5 h-5 rounded-sm text-xs font-bold flex items-center justify-center ${f === "W" ? "bg-green-500/20 text-green-400" : f === "D" ? "bg-yellow-500/20 text-yellow-400" : "bg-red-500/20 text-red-400"}`}>{f}</span>
+                            <span key={i} className={`w-5 h-5 rounded-sm text-xs font-bold flex items-center justify-center ${f === "W" ? "bg-green-500/20 text-green-400" : f === "D" ? "bg-yellow-500/20 text-yellow-400" : "bg-red-500/20 text-red-400"}`}>
+                              {f === "W" ? "T" : f === "D" ? "H" : "B"}
+                            </span>
                           ))}
                         </div>
                       </td>
@@ -121,7 +131,7 @@ export default function LeagueDetail() {
               </table>
             </div>
           ) : (
-            <div className="text-center py-16 text-muted-foreground font-mono">No standings data available yet.</div>
+            <div className="text-center py-16 text-muted-foreground font-mono">Chưa có dữ liệu bảng xếp hạng.</div>
           )}
         </TabsContent>
 
@@ -137,14 +147,14 @@ export default function LeagueDetail() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="font-bold group-hover:text-primary transition-colors truncate">{team.name}</div>
-                    <div className="text-xs text-muted-foreground">{team.country} · Est. {team.founded}</div>
+                    <div className="text-xs text-muted-foreground">{team.country} · Năm lập {team.founded}</div>
                   </div>
                   <Users className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
                 </div>
               </Link>
             ))}
           </div>
-          {!(teams ?? []).length && <div className="text-center py-16 text-muted-foreground font-mono">No teams found.</div>}
+          {!(teams ?? []).length && <div className="text-center py-16 text-muted-foreground font-mono">Không có đội bóng nào.</div>}
         </TabsContent>
 
         {/* FIXTURES */}
@@ -157,7 +167,7 @@ export default function LeagueDetail() {
           {!matches?.length && (
             <div className="text-center py-16 text-muted-foreground font-mono">
               <Calendar className="w-12 h-12 mx-auto mb-4 opacity-20" />
-              No upcoming fixtures.
+              Không có lịch thi đấu sắp tới.
             </div>
           )}
         </TabsContent>

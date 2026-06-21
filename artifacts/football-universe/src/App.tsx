@@ -15,6 +15,7 @@ import TeamDetail from "@/pages/team-detail";
 import Players from "@/pages/players";
 import PlayerDetail from "@/pages/player-detail";
 import Matches from "@/pages/matches";
+import MatchDetail from "@/pages/match-detail";
 import VRGateway from "@/pages/vr-gateway";
 import Profile from "@/pages/profile";
 import NotFound from "@/pages/not-found";
@@ -43,6 +44,7 @@ function Router() {
         <Route path="/players" component={Players} />
         <Route path="/players/:id" component={PlayerDetail} />
         <Route path="/matches" component={Matches} />
+        <Route path="/matches/:id" component={MatchDetail} />
         <Route path="/vr-gateway" component={VRGateway} />
         <Route path="/profile" component={Profile} />
         <Route component={NotFound} />

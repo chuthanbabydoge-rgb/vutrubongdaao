@@ -6,8 +6,18 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Users, Search, Globe } from "lucide-react";
 
-const REGIONS = ["All", "Europe", "Asia", "Americas", "Africa"];
-const TYPES = ["All", "club", "national"];
+const REGIONS = [
+  { value: "All", label: "Tất Cả" },
+  { value: "Europe", label: "Châu Âu" },
+  { value: "Asia", label: "Châu Á" },
+  { value: "Americas", label: "Châu Mỹ" },
+  { value: "Africa", label: "Châu Phi" },
+];
+const TYPES = [
+  { value: "All", label: "Tất Cả" },
+  { value: "club", label: "CLB" },
+  { value: "national", label: "Quốc Gia" },
+];
 
 export default function Teams() {
   const [search, setSearch] = useState("");
@@ -29,24 +39,24 @@ export default function Teams() {
       <div className="space-y-2">
         <h1 className="text-4xl md:text-5xl font-black font-mono uppercase tracking-tighter flex items-center gap-4">
           <Users className="w-10 h-10 text-primary" />
-          All <span className="text-primary">Teams</span>
+          Tất Cả <span className="text-primary">Đội Bóng</span>
         </h1>
-        <p className="text-muted-foreground font-mono">{teams?.length ?? 0} teams across all competitions</p>
+        <p className="text-muted-foreground font-mono">{teams?.length ?? 0} đội bóng trong các giải đấu</p>
       </div>
 
       <div className="flex flex-col gap-4">
         <div className="relative max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input placeholder="Search teams..." className="pl-10 bg-background/50 font-mono" value={search} onChange={e => setSearch(e.target.value)} />
+          <Input placeholder="Tìm kiếm đội bóng..." className="pl-10 bg-background/50 font-mono" value={search} onChange={e => setSearch(e.target.value)} />
         </div>
         <div className="flex flex-wrap gap-2">
           {REGIONS.map(r => (
-            <Button key={r} size="sm" variant={region === r ? "default" : "outline"} className="font-mono text-xs uppercase" onClick={() => setRegion(r)}>{r}</Button>
+            <Button key={r.value} size="sm" variant={region === r.value ? "default" : "outline"} className="font-mono text-xs uppercase" onClick={() => setRegion(r.value)}>{r.label}</Button>
           ))}
           <div className="w-px bg-border mx-2" />
           {TYPES.map(t => (
-            <Button key={t} size="sm" variant={type === t ? "default" : "outline"} className="font-mono text-xs uppercase" onClick={() => setType(t)}>
-              {t === "club" ? "Club" : t === "national" ? "National" : t}
+            <Button key={t.value} size="sm" variant={type === t.value ? "default" : "outline"} className="font-mono text-xs uppercase" onClick={() => setType(t.value)}>
+              {t.label}
             </Button>
           ))}
         </div>
@@ -75,7 +85,7 @@ export default function Teams() {
                 </div>
                 <div className="flex items-center justify-between text-xs text-muted-foreground font-mono">
                   <span className="truncate">{team.stadiumName}</span>
-                  <span>Est. {team.founded}</span>
+                  <span>Năm lập {team.founded}</span>
                 </div>
               </div>
             </Link>
@@ -86,7 +96,7 @@ export default function Teams() {
       {!isLoading && filtered.length === 0 && (
         <div className="text-center py-20 text-muted-foreground font-mono">
           <Users className="w-12 h-12 mx-auto mb-4 opacity-20" />
-          <p>No teams match your search.</p>
+          <p>Không tìm thấy đội bóng nào.</p>
         </div>
       )}
     </div>

@@ -6,7 +6,7 @@ import { format } from "date-fns";
 
 export function MatchCard({ match }: { match: Match }) {
   const isLive = match.status === "live";
-  
+
   return (
     <Link href={`/matches/${match.id}`}>
       <Card className="hover-elevate cursor-pointer overflow-hidden border-border/50 transition-all duration-300 hover:border-primary/50 group bg-card/50 backdrop-blur-sm">
@@ -15,15 +15,17 @@ export function MatchCard({ match }: { match: Match }) {
             <span className="font-medium tracking-wider uppercase text-primary/80">{match.leagueName}</span>
             <div className="flex items-center gap-2">
               {isLive ? (
-                <Badge variant="default" className="bg-primary text-primary-foreground animate-pulse font-mono">LIVE {match.minute}'</Badge>
+                <Badge variant="default" className="bg-primary text-primary-foreground animate-pulse font-mono">
+                  TRỰC TIẾP {match.minute}'
+                </Badge>
               ) : match.status === "finished" ? (
-                <Badge variant="secondary" className="font-mono bg-muted text-muted-foreground">FT</Badge>
+                <Badge variant="secondary" className="font-mono bg-muted text-muted-foreground">KT</Badge>
               ) : (
-                <span className="font-mono">{format(new Date(match.scheduledAt), "MMM dd, HH:mm")}</span>
+                <span className="font-mono">{format(new Date(match.scheduledAt), "dd/MM HH:mm")}</span>
               )}
             </div>
           </div>
-          
+
           <div className="flex items-center justify-between">
             <div className="flex flex-col items-center gap-2 flex-1">
               <div className="w-12 h-12 rounded-full bg-secondary/50 flex items-center justify-center overflow-hidden border border-border/50 group-hover:border-primary/30 transition-colors">
@@ -35,7 +37,7 @@ export function MatchCard({ match }: { match: Match }) {
               </div>
               <span className="text-sm font-bold text-center line-clamp-1">{match.homeTeamName}</span>
             </div>
-            
+
             <div className="flex flex-col items-center justify-center px-4">
               <div className="font-mono text-3xl font-black tabular-nums tracking-tighter">
                 {match.status === "upcoming" ? (
@@ -47,7 +49,7 @@ export function MatchCard({ match }: { match: Match }) {
                 )}
               </div>
             </div>
-            
+
             <div className="flex flex-col items-center gap-2 flex-1">
               <div className="w-12 h-12 rounded-full bg-secondary/50 flex items-center justify-center overflow-hidden border border-border/50 group-hover:border-primary/30 transition-colors">
                 {match.awayTeamLogoUrl ? (

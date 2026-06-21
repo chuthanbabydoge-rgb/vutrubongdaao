@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
+import { PlayerAvatar } from "@/components/ui/player-avatar";
 import { User, Search, Star, TrendingUp } from "lucide-react";
 
 const POSITIONS = ["All", "GK", "CB", "LB", "RB", "CDM", "CM", "CAM", "LW", "RW", "ST", "CF"];
@@ -30,19 +31,21 @@ export default function Players() {
       <div className="space-y-2">
         <h1 className="text-4xl md:text-5xl font-black font-mono uppercase tracking-tighter flex items-center gap-4">
           <User className="w-10 h-10 text-primary" />
-          Player <span className="text-primary">Database</span>
+          Cơ Sở Dữ Liệu <span className="text-primary">Cầu Thủ</span>
         </h1>
-        <p className="text-muted-foreground font-mono">{players?.length ?? 0} players in the virtual universe</p>
+        <p className="text-muted-foreground font-mono">{players?.length ?? 0} cầu thủ trong vũ trụ ảo</p>
       </div>
 
       <div className="flex flex-col gap-4">
         <div className="relative max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input placeholder="Search players..." className="pl-10 bg-background/50 font-mono" value={search} onChange={e => setSearch(e.target.value)} />
+          <Input placeholder="Tìm kiếm cầu thủ..." className="pl-10 bg-background/50 font-mono" value={search} onChange={e => setSearch(e.target.value)} />
         </div>
         <div className="flex flex-wrap gap-2">
           {POSITIONS.map(p => (
-            <Button key={p} size="sm" variant={position === p ? "default" : "outline"} className="font-mono text-xs" onClick={() => setPosition(p)}>{p}</Button>
+            <Button key={p} size="sm" variant={position === p ? "default" : "outline"} className="font-mono text-xs" onClick={() => setPosition(p)}>
+              {p === "All" ? "Tất Cả" : p}
+            </Button>
           ))}
         </div>
       </div>
@@ -57,11 +60,14 @@ export default function Players() {
             <Link key={player.id} href={`/players/${player.id}`}>
               <div className="group p-5 rounded-xl border border-border/40 bg-card/40 hover:border-primary/50 hover:bg-card/70 transition-all cursor-pointer space-y-3">
                 <div className="flex items-start justify-between">
-                  <div className="space-y-1">
-                    <div className="font-bold group-hover:text-primary transition-colors">{player.name}</div>
-                    <div className="text-xs text-muted-foreground">{player.nationality} · {player.teamName}</div>
+                  <div className="flex items-center gap-3">
+                    <PlayerAvatar name={player.name} size={44} />
+                    <div className="space-y-0.5">
+                      <div className="font-bold group-hover:text-primary transition-colors leading-tight">{player.name}</div>
+                      <div className="text-xs text-muted-foreground">{player.nationality} · {player.teamName}</div>
+                    </div>
                   </div>
-                  <div className="flex flex-col items-center">
+                  <div className="flex flex-col items-center flex-shrink-0 ml-2">
                     <span className={`text-2xl font-black font-mono ${ratingColor(player.rating ?? 0)}`}>{player.rating}</span>
                     <span className="text-xs text-muted-foreground">OVR</span>
                   </div>
@@ -82,7 +88,7 @@ export default function Players() {
       {!isLoading && filtered.length === 0 && (
         <div className="text-center py-20 text-muted-foreground font-mono">
           <User className="w-12 h-12 mx-auto mb-4 opacity-20" />
-          <p>No players match your search.</p>
+          <p>Không tìm thấy cầu thủ nào phù hợp.</p>
         </div>
       )}
     </div>

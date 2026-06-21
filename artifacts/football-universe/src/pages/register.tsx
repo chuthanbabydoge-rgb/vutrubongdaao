@@ -12,9 +12,9 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Loader2, Rocket } from "lucide-react";
 
 const registerSchema = z.object({
-  username: z.string().min(3, "Username must be at least 3 characters"),
-  email: z.string().email("Please enter a valid email"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  username: z.string().min(3, "Tên đăng nhập phải có ít nhất 3 ký tự"),
+  email: z.string().email("Vui lòng nhập email hợp lệ"),
+  password: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
   displayName: z.string().optional(),
 });
 
@@ -36,11 +36,11 @@ export default function Register() {
     registerMutation.mutate({ data }, {
       onSuccess: (response) => {
         login(response.token);
-        toast({ title: "Welcome to the Universe!", description: "Your career has begun. Choose your team." });
+        toast({ title: "Chào mừng đến Vũ Trụ!", description: "Sự nghiệp của bạn đã bắt đầu. Chọn đội bóng của bạn." });
         setLocation("/dashboard");
       },
       onError: (error: Error) => {
-        toast({ title: "Registration failed", description: error.message || "Please try again.", variant: "destructive" });
+        toast({ title: "Đăng ký thất bại", description: error.message || "Vui lòng thử lại.", variant: "destructive" });
       },
     });
   };
@@ -55,10 +55,10 @@ export default function Register() {
             </div>
           </div>
           <CardTitle className="text-3xl font-black font-mono tracking-tighter uppercase">
-            BEGIN <span className="text-primary">CAREER</span>
+            BẮT ĐẦU <span className="text-primary">SỰ NGHIỆP</span>
           </CardTitle>
           <CardDescription className="text-muted-foreground font-mono">
-            Create your account and enter the virtual football universe
+            Tạo tài khoản và bước vào vũ trụ bóng đá ảo
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -66,16 +66,16 @@ export default function Register() {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
               <FormField control={form.control} name="displayName" render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-mono uppercase text-xs font-bold text-muted-foreground tracking-wider">Display Name</FormLabel>
+                  <FormLabel className="font-mono uppercase text-xs font-bold text-muted-foreground tracking-wider">Tên Hiển Thị</FormLabel>
                   <FormControl>
-                    <Input placeholder="Lionel Messi Jr." {...field} className="bg-background/50 h-12 font-mono" />
+                    <Input placeholder="Ronaldo Jr." {...field} className="bg-background/50 h-12 font-mono" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
               <FormField control={form.control} name="username" render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-mono uppercase text-xs font-bold text-muted-foreground tracking-wider">Username <span className="text-primary">*</span></FormLabel>
+                  <FormLabel className="font-mono uppercase text-xs font-bold text-muted-foreground tracking-wider">Tên Đăng Nhập <span className="text-primary">*</span></FormLabel>
                   <FormControl>
                     <Input placeholder="striker99" {...field} className="bg-background/50 h-12 font-mono" />
                   </FormControl>
@@ -86,14 +86,14 @@ export default function Register() {
                 <FormItem>
                   <FormLabel className="font-mono uppercase text-xs font-bold text-muted-foreground tracking-wider">Email <span className="text-primary">*</span></FormLabel>
                   <FormControl>
-                    <Input placeholder="player@vtbda.com" {...field} className="bg-background/50 h-12 font-mono" />
+                    <Input placeholder="cauThu@vtbda.com" {...field} className="bg-background/50 h-12 font-mono" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
               <FormField control={form.control} name="password" render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-mono uppercase text-xs font-bold text-muted-foreground tracking-wider">Password <span className="text-primary">*</span></FormLabel>
+                  <FormLabel className="font-mono uppercase text-xs font-bold text-muted-foreground tracking-wider">Mật Khẩu <span className="text-primary">*</span></FormLabel>
                   <FormControl>
                     <Input type="password" placeholder="••••••••" {...field} className="bg-background/50 h-12 font-mono" />
                   </FormControl>
@@ -101,15 +101,15 @@ export default function Register() {
                 </FormItem>
               )} />
               <Button type="submit" className="w-full h-12 font-mono font-bold uppercase tracking-wider" disabled={registerMutation.isPending}>
-                {registerMutation.isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : "Launch Career"}
+                {registerMutation.isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : "Bắt Đầu Ngay"}
               </Button>
             </form>
           </Form>
         </CardContent>
         <CardFooter className="flex flex-col gap-4 border-t border-border/20 pt-6 text-center">
           <div className="text-sm text-muted-foreground">
-            Already a player?{" "}
-            <Link href="/login" className="text-primary hover:underline font-bold">Login here</Link>
+            Đã có tài khoản?{" "}
+            <Link href="/login" className="text-primary hover:underline font-bold">Đăng nhập tại đây</Link>
           </div>
         </CardFooter>
       </Card>

@@ -16,10 +16,10 @@ export default function Matches() {
   });
 
   const statusLabel: Record<StatusFilter, string> = {
-    all: "All Matches",
-    live: "Live Now",
-    scheduled: "Upcoming",
-    finished: "Results",
+    all: "Tất Cả",
+    live: "Đang Diễn Ra",
+    scheduled: "Sắp Diễn Ra",
+    finished: "Kết Quả",
   };
 
   return (
@@ -27,9 +27,9 @@ export default function Matches() {
       <div className="space-y-2">
         <h1 className="text-4xl md:text-5xl font-black font-mono uppercase tracking-tighter flex items-center gap-4">
           <Activity className="w-10 h-10 text-primary" />
-          Match <span className="text-primary">Centre</span>
+          Trung Tâm <span className="text-primary">Trận Đấu</span>
         </h1>
-        <p className="text-muted-foreground font-mono">Live scores, upcoming fixtures, and full results</p>
+        <p className="text-muted-foreground font-mono">Kết quả trực tiếp, lịch thi đấu và bảng kết quả</p>
       </div>
 
       <div className="flex flex-wrap gap-2">
@@ -63,7 +63,7 @@ export default function Matches() {
           ) : (
             <div className="text-center py-20 text-muted-foreground font-mono">
               <Activity className="w-12 h-12 mx-auto mb-4 opacity-20" />
-              <p>No {statusLabel[status].toLowerCase()} available.</p>
+              <p>Không có {statusLabel[status].toLowerCase()} nào.</p>
             </div>
           )}
         </>

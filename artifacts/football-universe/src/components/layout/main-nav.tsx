@@ -11,12 +11,12 @@ export function MainNav() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navItems = [
-    { href: "/", label: "Home", icon: Activity },
-    { href: "/leagues", label: "Leagues", icon: Trophy },
-    { href: "/teams", label: "Teams", icon: Shield },
-    { href: "/players", label: "Players", icon: Users },
-    { href: "/matches", label: "Matches", icon: Radio },
-    { href: "/vr-gateway", label: "VR Gateway", icon: Cpu },
+    { href: "/", label: "Trang Chủ", icon: Activity },
+    { href: "/leagues", label: "Giải Đấu", icon: Trophy },
+    { href: "/teams", label: "CLB", icon: Shield },
+    { href: "/players", label: "Cầu Thủ", icon: Users },
+    { href: "/matches", label: "Trận Đấu", icon: Radio },
+    { href: "/vr-gateway", label: "Cổng VR", icon: Cpu },
   ];
 
   return (
@@ -53,18 +53,18 @@ export function MainNav() {
             {user ? (
               <>
                 <Link href="/dashboard" className="text-sm font-medium hover:text-primary transition-colors flex items-center gap-2">
-                   <UserIcon className="h-4 w-4"/> Dashboard
+                  <UserIcon className="h-4 w-4" /> Bảng ĐK
                 </Link>
-                <Button variant="outline" onClick={logout}>Logout</Button>
+                <Button variant="outline" onClick={logout}>Đăng Xuất</Button>
               </>
             ) : (
               <>
                 <Link href="/login" className="text-sm font-medium hover:text-primary transition-colors">
-                  Login
+                  Đăng Nhập
                 </Link>
                 <Link href="/register">
                   <Button className="bg-primary text-primary-foreground hover:bg-primary/90 font-mono font-bold uppercase tracking-wider">
-                    Register
+                    Đăng Ký
                   </Button>
                 </Link>
               </>
@@ -82,8 +82,8 @@ export function MainNav() {
       {mobileMenuOpen && (
         <div className="md:hidden border-b border-border bg-background px-4 py-6 flex flex-col gap-4">
           {navItems.map((item) => {
-             const Icon = item.icon;
-             return (
+            const Icon = item.icon;
+            return (
               <Link
                 key={item.href}
                 href={item.href}
@@ -96,7 +96,7 @@ export function MainNav() {
                 <Icon className="h-5 w-5" />
                 {item.label}
               </Link>
-            )
+            );
           })}
           <hr className="my-2 border-border" />
           {user ? (
@@ -107,19 +107,19 @@ export function MainNav() {
                 onClick={() => setMobileMenuOpen(false)}
               >
                 <UserIcon className="h-5 w-5" />
-                Dashboard
+                Bảng Điều Khiển
               </Link>
               <Button variant="outline" className="w-full justify-start mt-2" onClick={() => { logout(); setMobileMenuOpen(false); }}>
-                Logout
+                Đăng Xuất
               </Button>
             </>
           ) : (
             <div className="flex flex-col gap-3 mt-2">
               <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
-                <Button variant="outline" className="w-full">Login</Button>
+                <Button variant="outline" className="w-full">Đăng Nhập</Button>
               </Link>
               <Link href="/register" onClick={() => setMobileMenuOpen(false)}>
-                <Button className="w-full bg-primary text-primary-foreground">Register</Button>
+                <Button className="w-full bg-primary text-primary-foreground">Đăng Ký</Button>
               </Link>
             </div>
           )}

@@ -14,11 +14,11 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               VŨ TRỤ <span className="text-primary">BÓNG ĐÁ</span>
             </span>
             <p className="text-sm text-muted-foreground">
-              The ultimate virtual football experience.
+              Nền tảng mô phỏng bóng đá ảo đỉnh cao.
             </p>
           </div>
           <div className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} VTBDA. All rights reserved.
+            © {new Date().getFullYear()} VTBDA. Bảo lưu mọi quyền.
           </div>
         </div>
       </footer>
