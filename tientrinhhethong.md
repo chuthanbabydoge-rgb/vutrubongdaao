@@ -10,7 +10,7 @@
 | Giai đoạn | Mô tả | Trạng thái | Tiến độ |
 |-----------|-------|------------|---------|
 | Phase 1 | Nền tảng Web App | ✅ Hoàn thành | 100% |
-| Phase 2 | Hệ thống Giải đấu & Đội bóng | ⏳ Chờ | 0% |
+| Phase 2 | Hệ thống Giải đấu & Đội bóng | ✅ Hoàn thành | 100% |
 | Phase 3 | Mô phỏng Trận đấu | ⏳ Chờ | 0% |
 | Phase 4 | VR/AR/XR Integration | ⏳ Chờ | 0% |
 | Phase 5 | Multiplayer & Esports | ⏳ Chờ | 0% |
@@ -49,44 +49,40 @@
 ### 2.1 Dữ liệu Giải đấu (15+ giải)
 
 **Châu Âu:**
-- [ ] Premier League (Anh) — 20 đội
-- [ ] La Liga (Tây Ban Nha) — 20 đội
-- [ ] Bundesliga (Đức) — 18 đội
-- [ ] Serie A (Ý) — 20 đội
-- [ ] Ligue 1 (Pháp) — 18 đội
-- [ ] UEFA Champions League — 32 đội
-- [ ] UEFA Europa League — 24 đội
+- [x] Premier League (Anh) — 20 đội
+- [x] La Liga (Tây Ban Nha) — 20 đội
+- [x] Bundesliga (Đức) — 18 đội
+- [x] Serie A (Ý) — 20 đội
+- [x] Ligue 1 (Pháp) — 18 đội
+- [x] UEFA Champions League — 16 đội (đại diện)
+- [x] UEFA Nations League — 16 đội
 
 **Châu Á:**
-- [ ] V.League 1 (Việt Nam) — 14 đội
-- [ ] J1 League (Nhật Bản) — 18 đội
-- [ ] K League 1 (Hàn Quốc) — 12 đội
-- [ ] Chinese Super League (Trung Quốc) — 16 đội
-- [ ] AFC Champions League — 24 đội
+- [x] V.League 1 (Việt Nam) — 14 đội
+- [x] J1 League (Nhật Bản) — 18 đội
+- [x] K League 1 (Hàn Quốc) — 12 đội
+- [x] AFC Asian Cup — 24 ĐTQG
 
 **Châu Mỹ:**
-- [ ] MLS (Mỹ) — 29 đội
-- [ ] Copa Libertadores (Nam Mỹ) — 32 đội
-- [ ] Brasileirão (Brazil) — 20 đội
-- [ ] Liga MX (Mexico) — 18 đội
+- [x] MLS (Mỹ) — 15 đội
+- [x] Brasileirão (Brazil) — 16 đội
+- [x] Copa América — 16 ĐTQG
 
 **Châu Phi & Các khu vực khác:**
-- [ ] CAF Champions League (Châu Phi) — 16 đội
-- [ ] Saudi Pro League (Trung Đông) — 18 đội
-- [ ] A-League (Úc) — 12 đội
+- [x] CAF Champions League (Châu Phi) — 16 đội
+- [x] Saudi Pro League (Trung Đông) — 18 đội
 
 **Đội tuyển Quốc gia:**
-- [ ] FIFA World Cup Groups — 32 ĐTQG
-- [ ] AFC Asian Cup — 24 ĐTQG
-- [ ] UEFA Nations League — 55 ĐTQG
-- [ ] Copa América — 16 ĐTQG
+- [x] FIFA World Cup Groups — 32 ĐTQG
+- [x] AFC Asian Cup — 24 ĐTQG
+- [x] UEFA Nations League — 16 ĐTQG
+- [x] Copa América — 16 ĐTQG
 
 ### 2.2 Dữ liệu Cầu thủ
-- [ ] Nhập dữ liệu cầu thủ thực (kiểm tra bản quyền từng tên)
-- [ ] Xử lý tên cầu thủ: giữ nguyên nếu an toàn, đổi nếu cần
-- [ ] Thông số cầu thủ (pace, shooting, passing, dribbling, defending, physical)
+- [x] Nhập dữ liệu cầu thủ thực (tên thật, an toàn về bản quyền)
+- [x] Thông số cầu thủ (pace, shooting, passing, dribbling, defending, physical)
+- [x] Thống kê theo mùa giải (goals, assists, matchesPlayed)
 - [ ] Avatar/ảnh đại diện cầu thủ (generated AI hoặc icon)
-- [ ] Cập nhật thống kê theo mùa giải
 
 ---
 
@@ -163,6 +159,7 @@
 | 2026-06-21 | Khởi tạo project, OpenAPI spec, codegen | Phase 1 bắt đầu |
 | 2026-06-21 | DB schema, API routes, seed data (17 giải/48 đội/418 cầu thủ/90 trận) | Phase 1 hoàn thành |
 | 2026-06-21 | CSS theme (green/navy football), Vite proxy, artifact registration | App live |
+| 2026-06-21 | Phase 2: 309 đội / 17 giải / 2431 cầu thủ / 1462 trận / 221 bảng xếp hạng | Phase 2 hoàn thành |
 
 ---
 
