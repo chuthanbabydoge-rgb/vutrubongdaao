@@ -9,7 +9,7 @@
 
 | Giai đoạn | Mô tả | Trạng thái | Tiến độ |
 |-----------|-------|------------|---------|
-| Phase 1 | Nền tảng Web App | 🔄 Đang xây dựng | 60% |
+| Phase 1 | Nền tảng Web App | ✅ Hoàn thành | 100% |
 | Phase 2 | Hệ thống Giải đấu & Đội bóng | ⏳ Chờ | 0% |
 | Phase 3 | Mô phỏng Trận đấu | ⏳ Chờ | 0% |
 | Phase 4 | VR/AR/XR Integration | ⏳ Chờ | 0% |
@@ -24,9 +24,9 @@
 - [x] Cấu hình PostgreSQL + Drizzle ORM
 - [x] Thiết kế OpenAPI spec (endpoints: auth, leagues, teams, players, matches, stats)
 - [x] Chạy codegen (React Query hooks + Zod schemas)
-- [ ] Xây dựng DB schema (users, leagues, teams, players, matches, events)
-- [ ] Implement API routes (auth, leagues, teams, players, matches, stats)
-- [ ] Seed dữ liệu ban đầu (giải đấu, đội bóng, cầu thủ)
+- [x] Xây dựng DB schema (users, leagues, teams, players, matches, standings)
+- [x] Implement API routes (auth, leagues, teams, players, matches, stats)
+- [x] Seed dữ liệu ban đầu (17 giải, 48 đội, 418 cầu thủ, 90 trận)
 
 ### 1.2 Frontend Web App
 - [x] Trang chủ / Landing page (hero, stats overview, live matches)
@@ -161,7 +161,8 @@
 | Ngày | Chức năng hoàn thành | Ghi chú |
 |------|---------------------|---------|
 | 2026-06-21 | Khởi tạo project, OpenAPI spec, codegen | Phase 1 bắt đầu |
-| | | |
+| 2026-06-21 | DB schema, API routes, seed data (17 giải/48 đội/418 cầu thủ/90 trận) | Phase 1 hoàn thành |
+| 2026-06-21 | CSS theme (green/navy football), Vite proxy, artifact registration | App live |
 
 ---
 
