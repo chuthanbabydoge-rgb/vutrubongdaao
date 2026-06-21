@@ -124,9 +124,9 @@
 ### 4.3 MR/XR Full Experience
 - [x] Trang Sân Vận Động 3D (/vr-stadium) — Three.js + WebXR entry point — ✅ 2026-06-21
 - [x] Kiểm tra thiết bị XR tự động (VR/AR/WebGL2 detection) — ✅ 2026-06-21
-- [ ] Chạy, di chuyển trong không gian 3D (locomotion)
-- [ ] Multiplayer VR (nhiều người cùng vào sân)
-- [ ] Khán đài khán giả ảo (dynamic crowd)
+- [x] Locomotion — Walk Mode WASD/Arrow: đi bộ tự do quanh sân, mouse look, Shift chạy nhanh — ✅ 2026-06-21
+- [x] Multiplayer VR — 22 avatar cầu thủ thật từ API (tên thật, formation, roaming AI, name label) — ✅ 2026-06-21
+- [x] Khán đài khán giả ảo — 1200+ InstancedMesh crowd với dynamic wave animation — ✅ 2026-06-21
 
 ---
 
