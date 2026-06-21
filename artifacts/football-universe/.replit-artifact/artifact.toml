@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "Vũ Trụ Bóng Đá Ảo"
+version = "1.0.0"
+id = "artifacts/football-universe"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 19742
+
+[services.development]
+run = "pnpm --filter @workspace/football-universe run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/football-universe", "run", "build" ]
+publicDir = "artifacts/football-universe/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "19742"
+BASE_PATH = "/"

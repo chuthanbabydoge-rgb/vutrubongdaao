@@ -1,6 +1,6 @@
-# [Project name]
+# Vũ Trụ Bóng Đá Ảo (Virtual Football Universe)
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+A Vietnamese football simulation web app with 19+ global leagues (Europe/Asia/Americas/Africa), real team and player data, user registration → team selection → match participation, and a roadmap toward VR/AR/XR access.
 
 ## Run & Operate
 
@@ -16,21 +16,39 @@ _Replace the heading above with the project's name, and this line with one sente
 - pnpm workspaces, Node.js 24, TypeScript 5.9
 - API: Express 5
 - DB: PostgreSQL + Drizzle ORM
-- Validation: Zod (`zod/v4`), `drizzle-zod`
+- Validation: Zod (`zod/v4` API is NOT available — use Zod v3: `z.string().email()` not `z.email()`)
 - API codegen: Orval (from OpenAPI spec)
 - Build: esbuild (CJS bundle)
+- Frontend: React + Vite + Wouter + TanStack Query + Tailwind
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `lib/api-spec/openapi.yaml` — source of truth for all API contracts
+- `lib/db/src/schema/` — 5 schema files: users, leagues, teams, players, matches/standings
+- `artifacts/api-server/src/routes/` — auth, leagues, teams, players, matches, users, stats
+- `artifacts/football-universe/src/pages/` — all frontend pages
+- `artifacts/football-universe/src/hooks/use-auth.tsx` — auth context (token in localStorage as `football_token`)
+- `tientrinhhethong.md` — VR/AR/XR roadmap with auto-tick progress tracking
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- Simple token auth: base64(JSON{userId, ts}), stored as `football_token` in localStorage
+- Generated API hooks return raw arrays (`Player[]`, `Team[]`, `Match[]`) — NOT wrapped `{ data, total }` objects
+- Orval `schemas` option REMOVED from zod config to avoid naming collision; barrel uses `sed` post-process to strip conflicting re-export
+- All API routes handle their full base path (no path rewriting from proxy)
+- Standings, teams, players all seeded via code_execution sandbox (not migration files)
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+- Home: hero, live matches, top leagues, recent results with stats counters
+- Leagues: 19 competitions (Europa/Asia/Americas/Africa/International) with region/type filters
+- League Detail: standings table with form badges, teams roster, upcoming fixtures tabs
+- Teams: 44 teams with region/type filter and color-coded badges
+- Team Detail: squad table sorted by position with full attributes
+- Players: 70 players sorted by rating with position filter; player detail with attribute bars
+- Matches: live, upcoming, and results with status filter
+- VR Gateway: immersion roadmap (Phase 1 web → Phase 4 AR/XR)
+- Auth: register, login, dashboard, profile with achievements
 
 ## User preferences
 
@@ -38,7 +56,10 @@ _Populate as you build — explicit user instructions worth remembering across s
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- Use Zod v3 API — `z.string().email()` NOT `z.email()` (workspace uses `zod: ^3.25.76`)
+- `useListTeams`, `useListPlayers`, `useListMatches` return arrays directly — use `data ?? []` not `data?.teams`
+- Never run `pnpm dev` at workspace root; use `restart_workflow` instead
+- Run `pnpm --filter @workspace/db run push` after schema changes before testing routes
 
 ## Pointers
 

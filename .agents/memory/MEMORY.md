@@ -1,0 +1,2 @@
+- [Drizzle inArray vs ANY](drizzle-inarray.md) — use `inArray(col, arr)` NOT `sql\`col = ANY(${arr})\`` — the latter produces invalid SQL
+- [API list hooks return arrays](api-list-arrays.md) — `useListTeams/Players/Matches` return raw arrays, not `{ data, total }` wrappers; use `data ?? []`

@@ -44,6 +44,11 @@ export function setAuthTokenGetter(getter: AuthTokenGetter | null): void {
   _authTokenGetter = getter;
 }
 
+// Ensure we have a default getter for our football_token
+if (typeof window !== 'undefined') {
+  setAuthTokenGetter(() => localStorage.getItem('football_token'));
+}
+
 function isRequest(input: RequestInfo | URL): input is Request {
   return typeof Request !== "undefined" && input instanceof Request;
 }

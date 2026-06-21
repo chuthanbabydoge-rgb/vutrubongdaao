@@ -1,22 +1,35 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Vũ Trụ Bóng Đá Ảo API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: auth
+    description: Authentication operations
+  - name: leagues
+    description: League and tournament operations
+  - name: teams
+    description: Team operations
+  - name: players
+    description: Player operations
+  - name: matches
+    description: Match operations
+  - name: users
+    description: User profile operations
+  - name: stats
+    description: Statistics and dashboard operations
+
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +37,478 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  # Auth
+  /auth/register:
+    post:
+      operationId: registerUser
+      tags: [auth]
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterInput"
+      responses:
+        "201":
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "400":
+          description: Validation error
+
+  /auth/login:
+    post:
+      operationId: loginUser
+      tags: [auth]
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginInput"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: Invalid credentials
+
+  /auth/logout:
+    post:
+      operationId: logoutUser
+      tags: [auth]
+      summary: Logout
+      responses:
+        "200":
+          description: Logged out
+
+  /auth/me:
+    get:
+      operationId: getCurrentUser
+      tags: [auth]
+      summary: Get current logged-in user
+      responses:
+        "200":
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: Not authenticated
+
+  # Users
+  /users/me:
+    patch:
+      operationId: updateUserProfile
+      tags: [users]
+      summary: Update user profile (set favorite team etc.)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserProfileUpdate"
+      responses:
+        "200":
+          description: Updated user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /users/me/join-team:
+    post:
+      operationId: joinTeam
+      tags: [users]
+      summary: User joins/selects a team to play for
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JoinTeamInput"
+      responses:
+        "200":
+          description: Joined team
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  # Leagues
+  /leagues:
+    get:
+      operationId: listLeagues
+      tags: [leagues]
+      summary: List all leagues/tournaments
+      parameters:
+        - name: region
+          in: query
+          schema:
+            type: string
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum: [club, national]
+      responses:
+        "200":
+          description: List of leagues
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/League"
+
+  /leagues/{leagueId}:
+    get:
+      operationId: getLeague
+      tags: [leagues]
+      summary: Get league details
+      parameters:
+        - name: leagueId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: League details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/League"
+
+  /leagues/{leagueId}/standings:
+    get:
+      operationId: getLeagueStandings
+      tags: [leagues]
+      summary: Get league standings table
+      parameters:
+        - name: leagueId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: League standings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/StandingRow"
+
+  /leagues/{leagueId}/top-scorers:
+    get:
+      operationId: getLeagueTopScorers
+      tags: [leagues]
+      summary: Get top scorers in a league
+      parameters:
+        - name: leagueId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Top scorers list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TopScorer"
+
+  /leagues/{leagueId}/matches:
+    get:
+      operationId: getLeagueMatches
+      tags: [leagues]
+      summary: Get matches for a league
+      parameters:
+        - name: leagueId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [upcoming, live, finished]
+      responses:
+        "200":
+          description: League matches
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Match"
+
+  # Teams
+  /teams:
+    get:
+      operationId: listTeams
+      tags: [teams]
+      summary: List teams
+      parameters:
+        - name: leagueId
+          in: query
+          schema:
+            type: integer
+        - name: region
+          in: query
+          schema:
+            type: string
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum: [club, national]
+        - name: search
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of teams
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Team"
+
+  /teams/{teamId}:
+    get:
+      operationId: getTeam
+      tags: [teams]
+      summary: Get team details
+      parameters:
+        - name: teamId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Team details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamDetail"
+
+  /teams/{teamId}/players:
+    get:
+      operationId: getTeamPlayers
+      tags: [teams]
+      summary: Get players in a team
+      parameters:
+        - name: teamId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Team players
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Player"
+
+  # Players
+  /players:
+    get:
+      operationId: listPlayers
+      tags: [players]
+      summary: List players with filters
+      parameters:
+        - name: teamId
+          in: query
+          schema:
+            type: integer
+        - name: position
+          in: query
+          schema:
+            type: string
+        - name: nationality
+          in: query
+          schema:
+            type: string
+        - name: search
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of players
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Player"
+
+  /players/{playerId}:
+    get:
+      operationId: getPlayer
+      tags: [players]
+      summary: Get player details
+      parameters:
+        - name: playerId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Player details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Player"
+
+  # Matches
+  /matches:
+    get:
+      operationId: listMatches
+      tags: [matches]
+      summary: List matches
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [upcoming, live, finished]
+        - name: teamId
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of matches
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Match"
+
+    post:
+      operationId: createMatch
+      tags: [matches]
+      summary: Schedule a new match
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MatchInput"
+      responses:
+        "201":
+          description: Match created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Match"
+
+  /matches/{matchId}:
+    get:
+      operationId: getMatch
+      tags: [matches]
+      summary: Get match details with events
+      parameters:
+        - name: matchId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Match details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MatchDetail"
+
+  /matches/{matchId}/simulate:
+    post:
+      operationId: simulateMatch
+      tags: [matches]
+      summary: Simulate/run a match
+      parameters:
+        - name: matchId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Match simulated with result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MatchDetail"
+
+  # Dashboard / Stats
+  /stats/overview:
+    get:
+      operationId: getStatsOverview
+      tags: [stats]
+      summary: Get global stats overview (total leagues, teams, players, matches)
+      responses:
+        "200":
+          description: Overview stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatsOverview"
+
+  /stats/recent-matches:
+    get:
+      operationId: getRecentMatches
+      tags: [stats]
+      summary: Get recently finished matches
+      responses:
+        "200":
+          description: Recent matches
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Match"
+
+  /stats/live-matches:
+    get:
+      operationId: getLiveMatches
+      tags: [stats]
+      summary: Get currently live matches
+      responses:
+        "200":
+          description: Live matches
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Match"
+
 components:
   schemas:
     HealthStatus:
@@ -31,6 +516,419 @@ components:
       properties:
         status:
           type: string
-      required:
-        - status
+      required: [status]
 
+    RegisterInput:
+      type: object
+      required: [username, email, password]
+      properties:
+        username:
+          type: string
+          minLength: 3
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 6
+        displayName:
+          type: string
+
+    LoginInput:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+
+    AuthResponse:
+      type: object
+      required: [user, token]
+      properties:
+        user:
+          $ref: "#/components/schemas/User"
+        token:
+          type: string
+
+    User:
+      type: object
+      required: [id, username, email, createdAt]
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        email:
+          type: string
+        displayName:
+          type: ["string", "null"]
+        avatarUrl:
+          type: ["string", "null"]
+        favoriteTeamId:
+          type: ["integer", "null"]
+        favoriteTeamName:
+          type: ["string", "null"]
+        position:
+          type: ["string", "null"]
+        rating:
+          type: number
+        matchesPlayed:
+          type: integer
+        goals:
+          type: integer
+        assists:
+          type: integer
+        createdAt:
+          type: string
+
+    UserProfileUpdate:
+      type: object
+      properties:
+        displayName:
+          type: string
+        avatarUrl:
+          type: string
+        position:
+          type: string
+
+    JoinTeamInput:
+      type: object
+      required: [teamId]
+      properties:
+        teamId:
+          type: integer
+        position:
+          type: string
+
+    League:
+      type: object
+      required: [id, name, region, type, season]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        shortName:
+          type: string
+        region:
+          type: string
+        country:
+          type: ["string", "null"]
+        type:
+          type: string
+          enum: [club, national]
+        season:
+          type: string
+        logoUrl:
+          type: ["string", "null"]
+        teamCount:
+          type: integer
+        description:
+          type: ["string", "null"]
+
+    StandingRow:
+      type: object
+      required: [position, teamId, teamName, played, won, drawn, lost, goalsFor, goalsAgainst, goalDifference, points]
+      properties:
+        position:
+          type: integer
+        teamId:
+          type: integer
+        teamName:
+          type: string
+        teamLogoUrl:
+          type: ["string", "null"]
+        played:
+          type: integer
+        won:
+          type: integer
+        drawn:
+          type: integer
+        lost:
+          type: integer
+        goalsFor:
+          type: integer
+        goalsAgainst:
+          type: integer
+        goalDifference:
+          type: integer
+        points:
+          type: integer
+        form:
+          type: ["string", "null"]
+
+    TopScorer:
+      type: object
+      required: [playerId, playerName, teamId, teamName, goals, assists]
+      properties:
+        playerId:
+          type: integer
+        playerName:
+          type: string
+        teamId:
+          type: integer
+        teamName:
+          type: string
+        nationality:
+          type: string
+        position:
+          type: string
+        goals:
+          type: integer
+        assists:
+          type: integer
+        matchesPlayed:
+          type: integer
+
+    Team:
+      type: object
+      required: [id, name, region, type]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        shortName:
+          type: ["string", "null"]
+        region:
+          type: string
+        country:
+          type: string
+        type:
+          type: string
+          enum: [club, national]
+        logoUrl:
+          type: ["string", "null"]
+        stadiumName:
+          type: ["string", "null"]
+        founded:
+          type: ["integer", "null"]
+        primaryColor:
+          type: ["string", "null"]
+        secondaryColor:
+          type: ["string", "null"]
+        playerCount:
+          type: integer
+        leagueId:
+          type: ["integer", "null"]
+        leagueName:
+          type: ["string", "null"]
+
+    TeamDetail:
+      type: object
+      required: [id, name, region, type]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        shortName:
+          type: ["string", "null"]
+        region:
+          type: string
+        country:
+          type: string
+        type:
+          type: string
+          enum: [club, national]
+        logoUrl:
+          type: ["string", "null"]
+        stadiumName:
+          type: ["string", "null"]
+        founded:
+          type: ["integer", "null"]
+        primaryColor:
+          type: ["string", "null"]
+        secondaryColor:
+          type: ["string", "null"]
+        leagueId:
+          type: ["integer", "null"]
+        leagueName:
+          type: ["string", "null"]
+        players:
+          type: array
+          items:
+            $ref: "#/components/schemas/Player"
+        recentMatches:
+          type: array
+          items:
+            $ref: "#/components/schemas/Match"
+
+    Player:
+      type: object
+      required: [id, name, position, nationality, teamId, teamName]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        displayName:
+          type: ["string", "null"]
+        nationality:
+          type: string
+        position:
+          type: string
+        number:
+          type: ["integer", "null"]
+        age:
+          type: ["integer", "null"]
+        teamId:
+          type: integer
+        teamName:
+          type: string
+        rating:
+          type: number
+        pace:
+          type: integer
+        shooting:
+          type: integer
+        passing:
+          type: integer
+        dribbling:
+          type: integer
+        defending:
+          type: integer
+        physical:
+          type: integer
+        goals:
+          type: integer
+        assists:
+          type: integer
+        matchesPlayed:
+          type: integer
+        avatarUrl:
+          type: ["string", "null"]
+
+    Match:
+      type: object
+      required: [id, homeTeamId, homeTeamName, awayTeamId, awayTeamName, leagueId, leagueName, status, scheduledAt]
+      properties:
+        id:
+          type: integer
+        homeTeamId:
+          type: integer
+        homeTeamName:
+          type: string
+        homeTeamLogoUrl:
+          type: ["string", "null"]
+        awayTeamId:
+          type: integer
+        awayTeamName:
+          type: string
+        awayTeamLogoUrl:
+          type: ["string", "null"]
+        leagueId:
+          type: integer
+        leagueName:
+          type: string
+        status:
+          type: string
+          enum: [upcoming, live, finished]
+        scheduledAt:
+          type: string
+        homeScore:
+          type: ["integer", "null"]
+        awayScore:
+          type: ["integer", "null"]
+        minute:
+          type: ["integer", "null"]
+        venue:
+          type: ["string", "null"]
+
+    MatchInput:
+      type: object
+      required: [homeTeamId, awayTeamId, leagueId, scheduledAt]
+      properties:
+        homeTeamId:
+          type: integer
+        awayTeamId:
+          type: integer
+        leagueId:
+          type: integer
+        scheduledAt:
+          type: string
+
+    MatchEvent:
+      type: object
+      required: [id, matchId, type, minute]
+      properties:
+        id:
+          type: integer
+        matchId:
+          type: integer
+        type:
+          type: string
+          enum: [goal, assist, yellow_card, red_card, substitution, penalty, own_goal]
+        minute:
+          type: integer
+        playerId:
+          type: ["integer", "null"]
+        playerName:
+          type: ["string", "null"]
+        teamId:
+          type: ["integer", "null"]
+        description:
+          type: ["string", "null"]
+
+    MatchDetail:
+      type: object
+      required: [id, homeTeamId, homeTeamName, awayTeamId, awayTeamName, leagueId, leagueName, status, scheduledAt]
+      properties:
+        id:
+          type: integer
+        homeTeamId:
+          type: integer
+        homeTeamName:
+          type: string
+        homeTeamLogoUrl:
+          type: ["string", "null"]
+        awayTeamId:
+          type: integer
+        awayTeamName:
+          type: string
+        awayTeamLogoUrl:
+          type: ["string", "null"]
+        leagueId:
+          type: integer
+        leagueName:
+          type: string
+        status:
+          type: string
+          enum: [upcoming, live, finished]
+        scheduledAt:
+          type: string
+        homeScore:
+          type: ["integer", "null"]
+        awayScore:
+          type: ["integer", "null"]
+        minute:
+          type: ["integer", "null"]
+        venue:
+          type: ["string", "null"]
+        events:
+          type: array
+          items:
+            $ref: "#/components/schemas/MatchEvent"
+
+    StatsOverview:
+      type: object
+      required: [totalLeagues, totalTeams, totalPlayers, totalMatches, liveMatches, registeredUsers]
+      properties:
+        totalLeagues:
+          type: integer
+        totalTeams:
+          type: integer
+        totalPlayers:
+          type: integer
+        totalMatches:
+          type: integer
+        liveMatches:
+          type: integer
+        registeredUsers:
+          type: integer
+        topLeague:
+          type: ["string", "null"]
+        topTeam:
+          type: ["string", "null"]
