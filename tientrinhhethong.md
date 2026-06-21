@@ -11,7 +11,7 @@
 |-----------|-------|------------|---------|
 | Phase 1 | Nền tảng Web App | ✅ Hoàn thành | 100% |
 | Phase 2 | Hệ thống Giải đấu & Đội bóng | ✅ Hoàn thành | 100% |
-| Phase 3 | Mô phỏng Trận đấu | ⏳ Chờ | 0% |
+| Phase 3 | Mô phỏng Trận đấu | 🔨 Đang Build | 80% |
 | Phase 4 | VR/AR/XR Integration | 🔨 Đang Build | 35% |
 | Phase 5 | Multiplayer & Esports | ⏳ Chờ | 0% |
 
@@ -89,18 +89,19 @@
 ## ⚽ PHASE 3 — MÔ PHỎNG TRẬN ĐẤU
 
 ### 3.1 Engine mô phỏng (Web-based)
-- [ ] Thuật toán mô phỏng trận đấu dựa trên chỉ số cầu thủ
-- [ ] Hệ thống sự kiện trận đấu (bàn thắng, thẻ phạt, thay người)
-- [ ] 2D match visualization (pitch view, real-time events)
-- [ ] Bảng điều khiển chiến thuật (đội hình, sơ đồ chiến thuật)
-- [ ] Hệ thống bình luận tự động (text-based commentary)
+- [x] Thuật toán mô phỏng trận đấu dựa trên chỉ số cầu thủ (Poisson xác suất) — ✅ 2026-06-21
+- [x] Hệ thống sự kiện trận đấu (bàn thắng, thẻ vàng, kiến tạo) — ✅ 2026-06-21
+- [x] 2D match visualization — SVG pitch với 22 cầu thủ, bóng, sự kiện nổi — ✅ 2026-06-21
+- [x] Bảng điều khiển chiến thuật — Formation picker (4-4-2/4-3-3/3-5-2/4-2-3-1/5-3-2) — ✅ 2026-06-21
+- [x] Hệ thống bình luận tự động (text-based commentary real-time) — ✅ 2026-06-21
+- [x] Trung tâm mô phỏng (/match-engine) — simulate hàng loạt, lọc theo giải, live feed — ✅ 2026-06-21
 
 ### 3.2 Gameplay User
-- [ ] User chọn vị trí thi đấu (GK, CB, MF, ST...)
-- [ ] Hệ thống chỉ số cầu thủ user (tăng theo thành tích)
-- [ ] Tham gia trận đấu (mini-game web-based)
-- [ ] Bảng thành tích cá nhân (goals, assists, rating)
-- [ ] Hệ thống thể lực / mệt mỏi
+- [x] User chọn vị trí thi đấu (GK, CB, MF, ST...) — ✅ 2026-06-21
+- [x] Hệ thống chỉ số cầu thủ user (tăng XP, lên cấp, chỉ số theo vị trí) — ✅ 2026-06-21
+- [x] Tham gia trận đấu (mini-game với sân 2D thời gian thực) — ✅ 2026-06-21
+- [x] Bảng thành tích cá nhân (goals, assists, rating trung bình) — ✅ 2026-06-21
+- [x] Hệ thống thể lực / mệt mỏi (stamina giảm mỗi trận, cần nghỉ) — ✅ 2026-06-21
 
 ---
 

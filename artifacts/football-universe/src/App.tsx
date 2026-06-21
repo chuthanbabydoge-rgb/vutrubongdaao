@@ -21,6 +21,7 @@ import VRStadium from "@/pages/vr-stadium";
 import Profile from "@/pages/profile";
 import PlaySetup from "@/pages/play-setup";
 import Play from "@/pages/play";
+import MatchEngine from "@/pages/match-engine";
 import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient({
@@ -53,6 +54,7 @@ function Router() {
         <Route path="/profile" component={Profile} />
         <Route path="/play/setup" component={PlaySetup} />
         <Route path="/play" component={Play} />
+        <Route path="/match-engine" component={MatchEngine} />
         <Route component={NotFound} />
       </Switch>
     </AppLayout>
