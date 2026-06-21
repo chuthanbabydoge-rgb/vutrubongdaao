@@ -133,6 +133,68 @@ export const JoinTeamResponse = zod.object({
 
 
 /**
+ * @summary Get current user's player card with full stats
+ */
+export const GetUserPlayerCardResponse = zod.object({
+  "id": zod.number(),
+  "username": zod.string(),
+  "displayName": zod.string().nullish(),
+  "position": zod.string().nullish(),
+  "pace": zod.number(),
+  "shooting": zod.number(),
+  "passing": zod.number(),
+  "dribbling": zod.number(),
+  "defending": zod.number(),
+  "physical": zod.number(),
+  "stamina": zod.number(),
+  "xp": zod.number(),
+  "level": zod.number(),
+  "goals": zod.number(),
+  "assists": zod.number(),
+  "matchesPlayed": zod.number(),
+  "rating": zod.number(),
+  "favoriteTeamId": zod.number().nullish(),
+  "favoriteTeamName": zod.string().nullish()
+})
+
+
+/**
+ * @summary Setup or update user player position and stats
+ */
+export const SetupPlayerProfileBody = zod.object({
+  "position": zod.enum(['GK', 'CB', 'LB', 'RB', 'CDM', 'CM', 'CAM', 'LW', 'RW', 'ST', 'CF']),
+  "pace": zod.number().optional(),
+  "shooting": zod.number().optional(),
+  "passing": zod.number().optional(),
+  "dribbling": zod.number().optional(),
+  "defending": zod.number().optional(),
+  "physical": zod.number().optional()
+})
+
+export const SetupPlayerProfileResponse = zod.object({
+  "id": zod.number(),
+  "username": zod.string(),
+  "displayName": zod.string().nullish(),
+  "position": zod.string().nullish(),
+  "pace": zod.number(),
+  "shooting": zod.number(),
+  "passing": zod.number(),
+  "dribbling": zod.number(),
+  "defending": zod.number(),
+  "physical": zod.number(),
+  "stamina": zod.number(),
+  "xp": zod.number(),
+  "level": zod.number(),
+  "goals": zod.number(),
+  "assists": zod.number(),
+  "matchesPlayed": zod.number(),
+  "rating": zod.number(),
+  "favoriteTeamId": zod.number().nullish(),
+  "favoriteTeamName": zod.string().nullish()
+})
+
+
+/**
  * @summary List all leagues/tournaments
  */
 export const ListLeaguesQueryParams = zod.object({
@@ -551,6 +613,58 @@ export const SimulateMatchResponse = zod.object({
   "teamId": zod.number().nullish(),
   "description": zod.string().nullish()
 })).optional()
+})
+
+
+/**
+ * @summary Play a match as logged-in user (Phase 3.2 Gameplay)
+ */
+export const PlayMatchParams = zod.object({
+  "matchId": zod.coerce.number()
+})
+
+export const PlayMatchResponse = zod.object({
+  "match": zod.object({
+  "id": zod.number(),
+  "homeTeamId": zod.number(),
+  "homeTeamName": zod.string(),
+  "homeTeamLogoUrl": zod.string().nullish(),
+  "awayTeamId": zod.number(),
+  "awayTeamName": zod.string(),
+  "awayTeamLogoUrl": zod.string().nullish(),
+  "leagueId": zod.number(),
+  "leagueName": zod.string(),
+  "status": zod.enum(['upcoming', 'live', 'finished']),
+  "scheduledAt": zod.string(),
+  "homeScore": zod.number().nullish(),
+  "awayScore": zod.number().nullish(),
+  "minute": zod.number().nullish(),
+  "venue": zod.string().nullish(),
+  "events": zod.array(zod.object({
+  "id": zod.number(),
+  "matchId": zod.number(),
+  "type": zod.enum(['goal', 'assist', 'yellow_card', 'red_card', 'substitution', 'penalty', 'own_goal']),
+  "minute": zod.number(),
+  "playerId": zod.number().nullish(),
+  "playerName": zod.string().nullish(),
+  "teamId": zod.number().nullish(),
+  "description": zod.string().nullish()
+})).optional()
+}),
+  "userPerformance": zod.object({
+  "goals": zod.number(),
+  "assists": zod.number(),
+  "rating": zod.number(),
+  "minutesPlayed": zod.number(),
+  "yellowCard": zod.boolean().optional(),
+  "xpEarned": zod.number(),
+  "levelUp": zod.boolean(),
+  "staminaUsed": zod.number(),
+  "newStamina": zod.number(),
+  "newXp": zod.number(),
+  "newLevel": zod.number(),
+  "keyMoments": zod.array(zod.string())
+})
 })
 
 

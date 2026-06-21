@@ -1,8 +1,9 @@
 import { Router } from "express";
 import { db } from "@workspace/db";
-import { matchesTable, matchEventsTable, teamsTable, leaguesTable, playersTable, standingsTable } from "@workspace/db";
+import { matchesTable, matchEventsTable, teamsTable, leaguesTable, playersTable, standingsTable, usersTable } from "@workspace/db";
 import { eq, and, inArray, sql } from "drizzle-orm";
 import { formatMatch } from "./leagues";
+import { parseToken } from "./auth";
 
 const router = Router();
 
@@ -175,6 +176,190 @@ router.post("/matches/:matchId/simulate", async (req, res) => {
       id: e.id, matchId: e.matchId, type: e.type, minute: e.minute,
       playerId: e.playerId, playerName: e.playerName, teamId: e.teamId, description: e.description,
     })),
+  });
+});
+
+router.post("/matches/:matchId/play", async (req, res) => {
+  // Auth
+  const token = req.headers.authorization?.replace("Bearer ", "");
+  if (!token) return res.status(401).json({ error: "Not authenticated" });
+  const payload = parseToken(token);
+  if (!payload) return res.status(401).json({ error: "Invalid token" });
+  const userId = payload.userId;
+
+  const matchId = parseInt(req.params.matchId);
+  if (isNaN(matchId)) return res.status(400).json({ error: "Invalid match ID" });
+
+  const [user] = await db.select().from(usersTable).where(eq(usersTable.id, userId)).limit(1);
+  if (!user) return res.status(404).json({ error: "User not found" });
+  if (!user.position) return res.status(400).json({ error: "Setup your player first at /play/setup" });
+  if (user.stamina < 20) return res.status(400).json({ error: "Thể lực quá thấp! Hãy nghỉ ngơi trước khi thi đấu.", code: "LOW_STAMINA" });
+
+  const [match] = await db.select().from(matchesTable).where(eq(matchesTable.id, matchId)).limit(1);
+  if (!match) return res.status(404).json({ error: "Match not found" });
+  if (match.status === "finished") return res.status(400).json({ error: "Trận đấu đã kết thúc." });
+
+  // Determine which team user plays for (prefer favoriteTeamId, else home)
+  const userTeamId = user.favoriteTeamId === match.awayTeamId ? match.awayTeamId : match.homeTeamId;
+  const isHomePlayer = userTeamId === match.homeTeamId;
+
+  const homePlayers = await db.select().from(playersTable).where(eq(playersTable.teamId, match.homeTeamId)).limit(11);
+  const awayPlayers = await db.select().from(playersTable).where(eq(playersTable.teamId, match.awayTeamId)).limit(11);
+
+  const homeRating = (homePlayers.reduce((s, p) => s + p.rating, 0) / (homePlayers.length || 1));
+  const awayRating = (awayPlayers.reduce((s, p) => s + p.rating, 0) / (awayPlayers.length || 1));
+  const userOverall = Math.round((user.pace + user.shooting + user.passing + user.dribbling + user.defending + user.physical) / 6);
+
+  // Boost user's team rating slightly
+  const boostedHomeRating = isHomePlayer ? homeRating * 0.9 + userOverall * 0.1 + 5 : homeRating + 5;
+  const boostedAwayRating = !isHomePlayer ? awayRating * 0.9 + userOverall * 0.1 : awayRating;
+  const totalStrength = boostedHomeRating + boostedAwayRating;
+
+  const homeScore = poissonRandom(1.5 * boostedHomeRating / totalStrength);
+  const awayScore = poissonRandom(1.5 * boostedAwayRating / totalStrength);
+
+  // --- User performance calculation ---
+  const pos = user.position ?? "CM";
+  const isAttacker = ["ST", "CF", "CAM", "LW", "RW"].includes(pos);
+  const isMidfielder = ["CM", "CDM", "LB", "RB"].includes(pos);
+  const isDefender = ["CB", "GK"].includes(pos);
+
+  const shootingFactor = user.shooting / 100;
+  const passingFactor = user.passing / 100;
+
+  const userGoalLambda = isAttacker ? 0.8 * shootingFactor : isMidfielder ? 0.35 * shootingFactor : 0.05;
+  const userAssistLambda = isAttacker ? 0.4 * passingFactor : isMidfielder ? 0.55 * passingFactor : 0.15 * passingFactor;
+
+  const userGoals = poissonRandom(userGoalLambda);
+  const userAssists = Math.min(poissonRandom(userAssistLambda), (isHomePlayer ? homeScore : awayScore) - userGoals);
+  const cappedAssists = Math.max(0, userAssists);
+  const yellowCard = Math.random() < (user.physical < 55 ? 0.15 : 0.07);
+  const minutesPlayed = 90;
+
+  const baseRating = isDefender
+    ? 5.5 + (user.defending - 50) / 50 + Math.random() * 0.8
+    : isAttacker
+    ? 5.5 + userGoals * 0.9 + cappedAssists * 0.5 + Math.random() * 0.8
+    : 5.5 + userGoals * 0.8 + cappedAssists * 0.6 + Math.random() * 0.7;
+  const matchRating = Math.min(10, Math.max(4.0, parseFloat(baseRating.toFixed(1))));
+
+  // Generate events
+  const events: { type: string; minute: number; playerId?: number; playerName?: string; teamId: number; description: string }[] = [];
+
+  // User goal events
+  const userName = user.displayName ?? user.username;
+  const userGoalMinutes: number[] = [];
+  for (let i = 0; i < userGoals; i++) {
+    const min = Math.floor(Math.random() * 88) + 1;
+    userGoalMinutes.push(min);
+    events.push({ type: "goal", minute: min, playerName: userName, teamId: userTeamId, description: `Bàn thắng của ${userName}` });
+  }
+
+  // User assist events
+  for (let i = 0; i < cappedAssists; i++) {
+    const min = Math.floor(Math.random() * 88) + 1;
+    events.push({ type: "assist", minute: min, playerName: userName, teamId: userTeamId, description: `Kiến tạo của ${userName}` });
+  }
+
+  // Yellow card
+  if (yellowCard) {
+    events.push({ type: "yellow_card", minute: Math.floor(Math.random() * 88) + 1, playerName: userName, teamId: userTeamId, description: `Thẻ vàng cho ${userName}` });
+  }
+
+  // Other player goals
+  const teamScored = isHomePlayer ? homeScore : awayScore;
+  const otherGoals = Math.max(0, teamScored - userGoals);
+  const opponentGoals = isHomePlayer ? awayScore : homeScore;
+  const teamPlayers = isHomePlayer ? homePlayers : awayPlayers;
+  const oppPlayers = isHomePlayer ? awayPlayers : homePlayers;
+
+  for (let i = 0; i < otherGoals; i++) {
+    const p = teamPlayers.filter(x => x.position !== "GK")[Math.floor(Math.random() * teamPlayers.length)];
+    if (p) { events.push({ type: "goal", minute: Math.floor(Math.random() * 88) + 1, playerId: p.id, playerName: p.name, teamId: userTeamId, description: `Bàn thắng của ${p.name}` }); }
+  }
+  for (let i = 0; i < opponentGoals; i++) {
+    const p = oppPlayers.filter(x => x.position !== "GK")[Math.floor(Math.random() * oppPlayers.length)];
+    if (p) { events.push({ type: "goal", minute: Math.floor(Math.random() * 88) + 1, playerId: p.id, playerName: p.name, teamId: isHomePlayer ? match.awayTeamId : match.homeTeamId, description: `Bàn thắng của ${p.name}` }); }
+  }
+
+  // Yellow cards for others (2-4 random)
+  const cardCount = Math.floor(Math.random() * 3);
+  const allP = [...homePlayers, ...awayPlayers].filter(p => p.position !== "GK");
+  for (let i = 0; i < cardCount; i++) {
+    const p = allP[Math.floor(Math.random() * allP.length)];
+    if (p) { events.push({ type: "yellow_card", minute: Math.floor(Math.random() * 88) + 1, playerId: p.id, playerName: p.name, teamId: homePlayers.includes(p) ? match.homeTeamId : match.awayTeamId, description: `Thẻ vàng cho ${p.name}` }); }
+  }
+
+  events.sort((a, b) => a.minute - b.minute);
+  if (events.length > 0) await db.insert(matchEventsTable).values(events.map(e => ({ matchId, ...e })));
+  await db.update(matchesTable).set({ status: "finished", homeScore, awayScore, minute: 90 }).where(eq(matchesTable.id, matchId));
+  await updateStandings(match.leagueId, match.homeTeamId, match.awayTeamId, homeScore, awayScore);
+
+  // --- Commentary key moments ---
+  const keyMoments: string[] = [];
+  if (userGoals > 0) {
+    userGoalMinutes.forEach(min => {
+      const lines = [
+        `Phút ${min}': ${userName} nhận bóng trong vòng cấm — dứt điểm chính xác! ⚽ GÀN THẮNG!`,
+        `Phút ${min}': ${userName} vào bóng sắc bén, bật tường qua trung vệ rồi đệm bóng vào lưới! ⚽`,
+        `Phút ${min}': Cú sút của ${userName} làm thủ môn đứng hình — bàn thắng đẹp mắt! ⚽`,
+      ];
+      keyMoments.push(lines[Math.floor(Math.random() * lines.length)]);
+    });
+  }
+  if (cappedAssists > 0) keyMoments.push(`${userName} có đường kiến tạo hoàn hảo cho đồng đội lập công! 🎯`);
+  if (yellowCard) keyMoments.push(`Trọng tài rút thẻ vàng cảnh cáo ${userName} sau tình huống vào bóng mạnh. 🟨`);
+  if (userGoals === 0 && cappedAssists === 0 && !isDefender) keyMoments.push(`${userName} cố gắng nhưng chưa tìm được cơ hội tốt hôm nay.`);
+  if (isDefender && homeScore + awayScore <= 2) keyMoments.push(`${userName} có màn trình diễn rắn chắc ở hàng thủ, chặn nhiều đợt tấn công nguy hiểm. 🛡️`);
+  if (matchRating >= 8.0) keyMoments.push(`Đây là một trong những trận đấu xuất sắc nhất của ${userName} từ trước đến nay! ⭐`);
+
+  // --- Update user stats ---
+  const staminaUsed = Math.floor(20 + Math.random() * 15);
+  const newStamina = Math.max(0, user.stamina - staminaUsed);
+  const xpEarned = 100 + userGoals * 60 + cappedAssists * 35 + Math.round(matchRating * 8);
+  const newXp = user.xp + xpEarned;
+  const xpPerLevel = 1000;
+  const newLevel = Math.floor(newXp / xpPerLevel) + 1;
+  const levelUp = newLevel > user.level;
+
+  // Recalculate career rating (rolling average)
+  const totalMatches = user.matchesPlayed + 1;
+  const newRating = parseFloat(((user.rating * user.matchesPlayed + matchRating) / totalMatches).toFixed(2));
+
+  await db.update(usersTable).set({
+    goals: user.goals + userGoals,
+    assists: user.assists + cappedAssists,
+    matchesPlayed: totalMatches,
+    rating: newRating,
+    stamina: newStamina,
+    xp: newXp,
+    level: newLevel,
+  }).where(eq(usersTable.id, userId));
+
+  // Return match + performance
+  const updatedMatch = await db.select().from(matchesTable).where(eq(matchesTable.id, matchId)).limit(1);
+  const insertedEvents = await db.select().from(matchEventsTable).where(eq(matchEventsTable.matchId, matchId)).orderBy(matchEventsTable.minute);
+  const { teamMap, leagueMap } = await getTeamAndLeagueMaps([match.homeTeamId, match.awayTeamId], [match.leagueId]);
+
+  return res.json({
+    match: {
+      ...formatMatch(updatedMatch[0], teamMap, leagueMap.get(match.leagueId)?.name ?? ""),
+      events: insertedEvents.map(e => ({ id: e.id, matchId: e.matchId, type: e.type, minute: e.minute, playerId: e.playerId, playerName: e.playerName, teamId: e.teamId, description: e.description })),
+    },
+    userPerformance: {
+      goals: userGoals,
+      assists: cappedAssists,
+      rating: matchRating,
+      minutesPlayed,
+      yellowCard,
+      xpEarned,
+      levelUp,
+      staminaUsed,
+      newStamina,
+      newXp,
+      newLevel,
+      keyMoments,
+    },
   });
 });
 

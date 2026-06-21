@@ -144,6 +144,42 @@ paths:
               schema:
                 $ref: "#/components/schemas/User"
 
+  /users/me/player-card:
+    get:
+      operationId: getUserPlayerCard
+      tags: [users]
+      summary: Get current user's player card with full stats
+      responses:
+        "200":
+          description: Player card
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserPlayerCard"
+        "401":
+          description: Not authenticated
+
+  /users/me/setup:
+    post:
+      operationId: setupPlayerProfile
+      tags: [users]
+      summary: Setup or update user player position and stats
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PlayerSetupInput"
+      responses:
+        "200":
+          description: Updated player card
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserPlayerCard"
+        "401":
+          description: Not authenticated
+
   # Leagues
   /leagues:
     get:
@@ -464,6 +500,29 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/MatchDetail"
+
+  /matches/{matchId}/play:
+    post:
+      operationId: playMatch
+      tags: [matches]
+      summary: Play a match as logged-in user (Phase 3.2 Gameplay)
+      parameters:
+        - name: matchId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Match played with user performance
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlayMatchResult"
+        "400":
+          description: Cannot play (low stamina, match already finished)
+        "401":
+          description: Not authenticated
 
   # Dashboard / Stats
   /stats/overview:
@@ -932,3 +991,106 @@ components:
           type: ["string", "null"]
         topTeam:
           type: ["string", "null"]
+
+    UserPlayerCard:
+      type: object
+      required: [id, username, pace, shooting, passing, dribbling, defending, physical, stamina, xp, level, goals, assists, matchesPlayed, rating]
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        displayName:
+          type: ["string", "null"]
+        position:
+          type: ["string", "null"]
+        pace:
+          type: integer
+        shooting:
+          type: integer
+        passing:
+          type: integer
+        dribbling:
+          type: integer
+        defending:
+          type: integer
+        physical:
+          type: integer
+        stamina:
+          type: integer
+        xp:
+          type: integer
+        level:
+          type: integer
+        goals:
+          type: integer
+        assists:
+          type: integer
+        matchesPlayed:
+          type: integer
+        rating:
+          type: number
+        favoriteTeamId:
+          type: ["integer", "null"]
+        favoriteTeamName:
+          type: ["string", "null"]
+
+    PlayerSetupInput:
+      type: object
+      required: [position]
+      properties:
+        position:
+          type: string
+          enum: [GK, CB, LB, RB, CDM, CM, CAM, LW, RW, ST, CF]
+        pace:
+          type: integer
+        shooting:
+          type: integer
+        passing:
+          type: integer
+        dribbling:
+          type: integer
+        defending:
+          type: integer
+        physical:
+          type: integer
+
+    UserPerformance:
+      type: object
+      required: [goals, assists, rating, minutesPlayed, xpEarned, levelUp, staminaUsed, newStamina, newXp, newLevel, keyMoments]
+      properties:
+        goals:
+          type: integer
+        assists:
+          type: integer
+        rating:
+          type: number
+        minutesPlayed:
+          type: integer
+        yellowCard:
+          type: boolean
+        xpEarned:
+          type: integer
+        levelUp:
+          type: boolean
+        staminaUsed:
+          type: integer
+        newStamina:
+          type: integer
+        newXp:
+          type: integer
+        newLevel:
+          type: integer
+        keyMoments:
+          type: array
+          items:
+            type: string
+
+    PlayMatchResult:
+      type: object
+      required: [match, userPerformance]
+      properties:
+        match:
+          $ref: "#/components/schemas/MatchDetail"
+        userPerformance:
+          $ref: "#/components/schemas/UserPerformance"

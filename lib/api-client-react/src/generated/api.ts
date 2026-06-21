@@ -33,7 +33,9 @@ import type {
   Match,
   MatchDetail,
   MatchInput,
+  PlayMatchResult,
   Player,
+  PlayerSetupInput,
   RegisterInput,
   StandingRow,
   StatsOverview,
@@ -41,6 +43,7 @@ import type {
   TeamDetail,
   TopScorer,
   User,
+  UserPlayerCard,
   UserProfileUpdate
 } from './api.schemas';
 
@@ -562,6 +565,154 @@ export const useJoinTeam = <TError = ErrorType<unknown>,
         TContext
       > => {
       return useMutation(getJoinTeamMutationOptions(options));
+    }
+
+export const getGetUserPlayerCardUrl = () => {
+
+
+
+
+  return `/api/users/me/player-card`
+}
+
+/**
+ * @summary Get current user's player card with full stats
+ */
+export const getUserPlayerCard = async ( options?: RequestInit): Promise<UserPlayerCard> => {
+
+  return customFetch<UserPlayerCard>(getGetUserPlayerCardUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetUserPlayerCardQueryKey = () => {
+    return [
+    `/api/users/me/player-card`
+    ] as const;
+    }
+
+
+export const getGetUserPlayerCardQueryOptions = <TData = Awaited<ReturnType<typeof getUserPlayerCard>>, TError = ErrorType<void>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getUserPlayerCard>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetUserPlayerCardQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getUserPlayerCard>>> = ({ signal }) => getUserPlayerCard({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getUserPlayerCard>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetUserPlayerCardQueryResult = NonNullable<Awaited<ReturnType<typeof getUserPlayerCard>>>
+export type GetUserPlayerCardQueryError = ErrorType<void>
+
+
+/**
+ * @summary Get current user's player card with full stats
+ */
+
+export function useGetUserPlayerCard<TData = Awaited<ReturnType<typeof getUserPlayerCard>>, TError = ErrorType<void>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getUserPlayerCard>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetUserPlayerCardQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getSetupPlayerProfileUrl = () => {
+
+
+
+
+  return `/api/users/me/setup`
+}
+
+/**
+ * @summary Setup or update user player position and stats
+ */
+export const setupPlayerProfile = async (playerSetupInput: PlayerSetupInput, options?: RequestInit): Promise<UserPlayerCard> => {
+
+  return customFetch<UserPlayerCard>(getSetupPlayerProfileUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      playerSetupInput,)
+  }
+);}
+
+
+
+
+export const getSetupPlayerProfileMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof setupPlayerProfile>>, TError,{data: BodyType<PlayerSetupInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof setupPlayerProfile>>, TError,{data: BodyType<PlayerSetupInput>}, TContext> => {
+
+const mutationKey = ['setupPlayerProfile'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof setupPlayerProfile>>, {data: BodyType<PlayerSetupInput>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  setupPlayerProfile(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SetupPlayerProfileMutationResult = NonNullable<Awaited<ReturnType<typeof setupPlayerProfile>>>
+    export type SetupPlayerProfileMutationBody = BodyType<PlayerSetupInput>
+    export type SetupPlayerProfileMutationError = ErrorType<void>
+
+    /**
+ * @summary Setup or update user player position and stats
+ */
+export const useSetupPlayerProfile = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof setupPlayerProfile>>, TError,{data: BodyType<PlayerSetupInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof setupPlayerProfile>>,
+        TError,
+        {data: BodyType<PlayerSetupInput>},
+        TContext
+      > => {
+      return useMutation(getSetupPlayerProfileMutationOptions(options));
     }
 
 export const getListLeaguesUrl = (params?: ListLeaguesParams,) => {
@@ -1667,6 +1818,76 @@ export const useSimulateMatch = <TError = ErrorType<unknown>,
         TContext
       > => {
       return useMutation(getSimulateMatchMutationOptions(options));
+    }
+
+export const getPlayMatchUrl = (matchId: number,) => {
+
+
+
+
+  return `/api/matches/${matchId}/play`
+}
+
+/**
+ * @summary Play a match as logged-in user (Phase 3.2 Gameplay)
+ */
+export const playMatch = async (matchId: number, options?: RequestInit): Promise<PlayMatchResult> => {
+
+  return customFetch<PlayMatchResult>(getPlayMatchUrl(matchId),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+export const getPlayMatchMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof playMatch>>, TError,{matchId: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof playMatch>>, TError,{matchId: number}, TContext> => {
+
+const mutationKey = ['playMatch'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof playMatch>>, {matchId: number}> = (props) => {
+          const {matchId} = props ?? {};
+
+          return  playMatch(matchId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PlayMatchMutationResult = NonNullable<Awaited<ReturnType<typeof playMatch>>>
+
+    export type PlayMatchMutationError = ErrorType<void>
+
+    /**
+ * @summary Play a match as logged-in user (Phase 3.2 Gameplay)
+ */
+export const usePlayMatch = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof playMatch>>, TError,{matchId: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof playMatch>>,
+        TError,
+        {matchId: number},
+        TContext
+      > => {
+      return useMutation(getPlayMatchMutationOptions(options));
     }
 
 export const getGetStatsOverviewUrl = () => {

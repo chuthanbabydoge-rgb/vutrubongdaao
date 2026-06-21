@@ -112,6 +112,15 @@ function formatUser(user: typeof usersTable.$inferSelect) {
     matchesPlayed: user.matchesPlayed,
     goals: user.goals,
     assists: user.assists,
+    pace: user.pace,
+    shooting: user.shooting,
+    passing: user.passing,
+    dribbling: user.dribbling,
+    defending: user.defending,
+    physical: user.physical,
+    stamina: user.stamina,
+    xp: user.xp,
+    level: user.level,
     createdAt: user.createdAt?.toISOString() ?? new Date().toISOString(),
   };
 }

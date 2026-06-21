@@ -323,6 +323,79 @@ export interface StatsOverview {
   topTeam?: string | null;
 }
 
+export interface UserPlayerCard {
+  id: number;
+  username: string;
+  /** @nullable */
+  displayName?: string | null;
+  /** @nullable */
+  position?: string | null;
+  pace: number;
+  shooting: number;
+  passing: number;
+  dribbling: number;
+  defending: number;
+  physical: number;
+  stamina: number;
+  xp: number;
+  level: number;
+  goals: number;
+  assists: number;
+  matchesPlayed: number;
+  rating: number;
+  /** @nullable */
+  favoriteTeamId?: number | null;
+  /** @nullable */
+  favoriteTeamName?: string | null;
+}
+
+export type PlayerSetupInputPosition = typeof PlayerSetupInputPosition[keyof typeof PlayerSetupInputPosition];
+
+
+export const PlayerSetupInputPosition = {
+  GK: 'GK',
+  CB: 'CB',
+  LB: 'LB',
+  RB: 'RB',
+  CDM: 'CDM',
+  CM: 'CM',
+  CAM: 'CAM',
+  LW: 'LW',
+  RW: 'RW',
+  ST: 'ST',
+  CF: 'CF',
+} as const;
+
+export interface PlayerSetupInput {
+  position: PlayerSetupInputPosition;
+  pace?: number;
+  shooting?: number;
+  passing?: number;
+  dribbling?: number;
+  defending?: number;
+  physical?: number;
+}
+
+export interface UserPerformance {
+  goals: number;
+  assists: number;
+  rating: number;
+  minutesPlayed: number;
+  yellowCard?: boolean;
+  xpEarned: number;
+  levelUp: boolean;
+  staminaUsed: number;
+  newStamina: number;
+  newXp: number;
+  newLevel: number;
+  keyMoments: string[];
+}
+
+export interface PlayMatchResult {
+  match: MatchDetail;
+  userPerformance: UserPerformance;
+}
+
 export type ListLeaguesParams = {
 region?: string;
 type?: ListLeaguesType;

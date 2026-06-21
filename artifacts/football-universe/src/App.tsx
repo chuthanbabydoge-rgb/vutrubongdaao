@@ -18,6 +18,8 @@ import Matches from "@/pages/matches";
 import MatchDetail from "@/pages/match-detail";
 import VRGateway from "@/pages/vr-gateway";
 import Profile from "@/pages/profile";
+import PlaySetup from "@/pages/play-setup";
+import Play from "@/pages/play";
 import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient({
@@ -47,6 +49,8 @@ function Router() {
         <Route path="/matches/:id" component={MatchDetail} />
         <Route path="/vr-gateway" component={VRGateway} />
         <Route path="/profile" component={Profile} />
+        <Route path="/play/setup" component={PlaySetup} />
+        <Route path="/play" component={Play} />
         <Route component={NotFound} />
       </Switch>
     </AppLayout>

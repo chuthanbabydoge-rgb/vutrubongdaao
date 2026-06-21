@@ -1,7 +1,7 @@
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Activity, Trophy, Shield, Users, Radio, Cpu, User as UserIcon } from "lucide-react";
+import { Menu, X, Activity, Trophy, Shield, Users, Radio, Cpu, Swords, User as UserIcon } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -16,6 +16,7 @@ export function MainNav() {
     { href: "/teams", label: "CLB", icon: Shield },
     { href: "/players", label: "Cầu Thủ", icon: Users },
     { href: "/matches", label: "Trận Đấu", icon: Radio },
+    { href: "/play", label: "Thi Đấu", icon: Swords },
     { href: "/vr-gateway", label: "Cổng VR", icon: Cpu },
   ];
 
