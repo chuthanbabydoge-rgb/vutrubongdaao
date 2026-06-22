@@ -23,7 +23,7 @@ function StatBar({ label, value, icon }: { label: string; value: number; icon: R
 export default function PlayerDetail() {
   const { id } = useParams<{ id: string }>();
   const playerId = parseInt(id ?? "0");
-  const { data: player, isLoading } = useGetPlayer({ playerId });
+  const { data: player, isLoading } = useGetPlayer(playerId);
 
   if (isLoading) return (
     <div className="container py-12 space-y-6 max-w-4xl">
