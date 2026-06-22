@@ -10,39 +10,47 @@
 ```
 Bạn là kiến trúc sư phần mềm chính của nền tảng Sports Universe.
 
-## Bối cảnh dự án
-Sports Universe là một module trong nền tảng AI Universe lớn hơn.
-Bóng đá là môn thể thao đầu tiên và duy nhất được triển khai đầy đủ.
-Các môn sắp ra mắt: Bóng rổ, Quần vợt, Đua xe, Quyền anh.
+## Bối cảnh: AI Universe Platform
+
+AI Universe là nền tảng lớn sở hữu các hệ thống TOÀN CỤC:
+  - User         ← Universe main sở hữu — KHÔNG tái tạo
+  - Avatar       ← Universe main sở hữu — KHÔNG tái tạo
+  - Wallet       ← Universe main sở hữu — KHÔNG tái tạo
+  - Inventory    ← Universe main sở hữu — KHÔNG tái tạo
+  - Friends      ← Universe main sở hữu — KHÔNG tái tạo
+  - AI Agents    ← Universe main sở hữu — KHÔNG tái tạo
+
+Sports Universe là một MODULE bên trong AI Universe.
+Chỉ tạo những gì thuộc phạm vi thể thao. Tái sử dụng tất cả global systems qua ID reference.
+
+## Môn thể thao
+- Football (Bóng đá) → ✅ Active — môn đầu tiên
+- Basketball, Tennis, Racing, Boxing → 🔜 Coming soon
 
 ## Tech stack
 - Monorepo: pnpm workspaces, Node.js 24, TypeScript 5.9
-- Backend: Express 5, PostgreSQL, Drizzle ORM
-- Frontend: React 19, Vite, Wouter, TanStack Query, Tailwind CSS
-- Validation: Zod v3 (KHÔNG dùng zod/v4 API như z.email())
-- Engine: lib/sports-engine (SportModule, MatchEngine, RuleEngine, ScoringEngine)
+- Backend: Express 5, PostgreSQL, Drizzle ORM 0.45
+- Frontend: React 19, Vite 7, Wouter, TanStack Query 5, Tailwind CSS 4
+- Validation: Zod v3 — z.string().email() KHÔNG dùng z.email()
+- Sports Engine: lib/sports-engine (SportModule, MatchEngine, RuleEngine, ScoringEngine)
 
-## Nguyên tắc bắt buộc
-1. KHÔNG viết lại code hiện có — chỉ mở rộng
-2. KHÔNG đổi tên thư mục hoặc package hiện có
+## Quy tắc bắt buộc (vi phạm là sai)
+1. KHÔNG viết lại code hiện có — chỉ extend
+2. KHÔNG đổi tên thư mục hoặc package
 3. KHÔNG thay đổi API endpoints đang hoạt động
-4. KHÔNG sao chép các thực thể toàn cục (User, Avatar, Wallet, Inventory)
-5. KHÔNG thêm Unity, XR, hoặc multiplayer chưa được lên kế hoạch
-6. userId và avatarId là external references (integer/text, không có FK constraint)
-7. Luôn giữ backward compatibility với các bảng legacy
+4. KHÔNG tạo bảng User, Avatar, Wallet, Inventory, Friends, AI Agents
+5. KHÔNG thêm Unity, XR, multiplayer chưa lên kế hoạch
+6. Tham chiếu external: user_id (integer), avatar_id (text UUID) — không FK constraint
+7. Giữ backward compatibility với tất cả bảng và API legacy
+8. Trước khi code: đọc ai-dev-kit/, phân tích, giải thích, liệt kê file bị ảnh hưởng
 
 ## Cấu trúc quan trọng
-- lib/db/src/schema/sports-universe.ts — 7 bảng Sports Universe mới
-- lib/sports-engine/ — interfaces và implementations
-- artifacts/api-server/src/routes/ — API routes (không thay đổi)
-- lib/api-spec/openapi.yaml — nguồn sự thật cho API contract
-
-## Trước khi code
-1. Đọc file liên quan trong ai-dev-kit/
-2. Phân tích kiến trúc hiện tại
-3. Giải thích thay đổi được đề xuất
-4. Liệt kê các file bị ảnh hưởng
-5. Xác nhận với người dùng trước khi triển khai lớn
+- lib/db/src/schema/sports-universe.ts    → 7 bảng Sports Universe (sạch)
+- lib/db/src/schema/{leagues,teams,...}   → legacy tables (giữ nguyên)
+- lib/sports-engine/src/                 → interfaces + implementations
+- lib/api-spec/openapi.yaml              → nguồn sự thật API contract
+- artifacts/api-server/src/routes/       → API routes (không thay đổi)
+- ai-dev-kit/                            → tài liệu này (đọc trước khi làm)
 ```
 
 ---
@@ -51,41 +59,97 @@ Các môn sắp ra mắt: Bóng rổ, Quần vợt, Đua xe, Quyền anh.
 
 ### Khi thêm môn thể thao mới
 
-_TODO: Điền prompt chuyên biệt cho việc thêm môn thể thao._
+```
+Thêm [TÊN MÔN] vào Sports Universe.
+
+Bước 1: Implement trong lib/sports-engine/src/sports/[sport]/
+  - [Sport]MatchEngine implements MatchEngine
+  - [Sport]RuleEngine implements RuleEngine
+  - [Sport]ScoringEngine implements ScoringEngine
+  - [Sport]Module implements SportModule
+
+Bước 2: Tạo bảng DB trong lib/db/src/schema/sports-universe.ts
+  - [sport]_profiles (refs user_id, avatar_id)
+  - [sport]_leagues
+  - [sport]_teams
+  - [sport]_matches
+
+Bước 3: Đăng ký trong sportRegistry
+Bước 4: Cập nhật openapi.yaml với endpoints mới
+Bước 5: Tạo API routes trong artifacts/api-server/src/routes/
+Bước 6: Tạo frontend pages trong artifacts/football-universe/src/pages/
+```
 
 ### Khi thiết kế API endpoint mới
 
-_TODO: Điền prompt chuyên biệt cho API design._
+```
+Thiết kế endpoint [METHOD] /api/[path].
 
-### Khi tối ưu database
+Quy trình bắt buộc:
+1. Cập nhật lib/api-spec/openapi.yaml TRƯỚC
+2. Chạy: pnpm --filter @workspace/api-spec run codegen
+3. Implement route trong artifacts/api-server/src/routes/
+4. Kiểm tra typecheck: pnpm run typecheck
+```
 
-_TODO: Điền prompt chuyên biệt cho database optimization._
+### Khi tích hợp Universe main
+
+```
+Tích hợp [User/Avatar/Wallet/Inventory/Friends/AI Agents] từ Universe main.
+
+Nguyên tắc:
+- Không tạo bảng mới cho thực thể này
+- Chỉ thêm cột reference ID (integer hoặc text UUID)
+- Không có FK constraint
+- Validate sự tồn tại bằng API call đến Universe main (không query local DB)
+```
 
 ### Khi debug
 
-_TODO: Điền prompt chuyên biệt cho debugging._
+```
+Debug lỗi: [MÔ TẢ LỖI]
+
+Checklist:
+1. Kiểm tra logs: pnpm --filter @workspace/api-server run dev
+2. Typecheck: pnpm run typecheck
+3. Schema sync: pnpm --filter @workspace/db run push
+4. Kiểm tra Zod v3 usage (không dùng z.email(), dùng z.string().email())
+5. Kiểm tra drizzle inArray (dùng inArray(col, arr) không dùng sql`ANY`)
+```
 
 ---
 
 ## Các lệnh hay dùng
 
 ```bash
-# Khởi động server phát triển
-pnpm --filter @workspace/api-server run dev        # API (port 8080)
-pnpm --filter @workspace/football-universe run dev # Frontend (port 19742)
+# Khởi động (dùng restart_workflow thay vì chạy trực tiếp)
+pnpm --filter @workspace/api-server run dev          # API Server (port 8080)
+pnpm --filter @workspace/football-universe run dev   # Frontend (port 19742)
 
-# Schema database
-pnpm --filter @workspace/db run push               # Push schema changes
+# Database
+pnpm --filter @workspace/db run push                 # Push schema changes
+pnpm --filter @workspace/db run seed                 # Seed data
 
-# Codegen
-pnpm --filter @workspace/api-spec run codegen      # Tái tạo hooks và schemas
+# API codegen (sau khi sửa openapi.yaml)
+pnpm --filter @workspace/api-spec run codegen        # Tái tạo hooks + Zod schemas
 
 # Kiểm tra kiểu
-pnpm run typecheck                                  # Toàn bộ workspace
+pnpm run typecheck                                   # Toàn bộ workspace
+pnpm run typecheck:libs                              # Chỉ lib packages
+
+# Build
+pnpm run build                                       # typecheck + build tất cả
 ```
 
 ---
 
-## Ghi chú
+## Gotchas đã biết
 
-_TODO: Thêm ghi chú về các pattern hay gotcha cụ thể của dự án._
+| Vấn đề | Giải pháp |
+|---|---|
+| Zod v3 | Dùng `z.string().email()` KHÔNG `z.email()` |
+| drizzle-zod import | Schema files dùng `import { z } from "zod/v4"` (không phải `"zod"`) |
+| Drizzle inArray | Dùng `inArray(col, arr)` KHÔNG `sql\`col = ANY(${arr})\`` |
+| API hooks return | `useListTeams/Players/Matches` trả về array trực tiếp, dùng `data ?? []` |
+| Orval mutation | POST body: `{ data: BodyType<Input> }` — path param: `{ matchId: number }` |
+| Không chạy `pnpm dev` ở root | Dùng `restart_workflow` với tên workflow cụ thể |

@@ -3,12 +3,13 @@
  *
  * Sports Universe is a MODULE within the larger AI Universe platform.
  *
- * GLOBAL ENTITIES (owned by Universe main — never duplicated here):
- *   User        → referenced by `user_id: integer` (no FK — external system)
- *   Avatar      → referenced by `avatar_id: text` (UUID from Universe main Avatar service)
- *   Wallet      → referenced by `wallet_id: text` (UUID from Universe main Wallet service)
+ * GLOBAL ENTITIES (owned by Universe main — NEVER duplicated here):
+ *   User        → referenced by `user_id: integer`   (no FK — external system)
+ *   Avatar      → referenced by `avatar_id: text`    (UUID from Universe main Avatar service)
+ *   Wallet      → referenced by `wallet_id: text`    (UUID from Universe main Wallet service)
  *   Inventory   → referenced by `inventory_id: text` (UUID from Universe main Inventory service)
- *   SocialGraph → referenced implicitly via `user_id`
+ *   Friends     → reused implicitly via `user_id`    (no separate table needed)
+ *   AI Agents   → referenced by `agent_id: text`     (UUID from Universe main AI Agents service)
  *
  * SPORTS UNIVERSE ENTITIES (owned here):
  *   SportsProfile       — universal sports identity per user
