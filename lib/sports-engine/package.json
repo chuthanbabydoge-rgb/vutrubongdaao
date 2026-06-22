@@ -1,0 +1,17 @@
+{
+  "name": "@workspace/sports-engine",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./interfaces": "./src/interfaces/index.ts",
+    "./types": "./src/types/common.ts",
+    "./registry": "./src/registry/sport-registry.ts",
+    "./sports/football": "./src/sports/football/index.ts",
+    "./sports/basketball": "./src/sports/basketball/index.ts",
+    "./sports/tennis": "./src/sports/tennis/index.ts",
+    "./sports/racing": "./src/sports/racing/index.ts",
+    "./sports/boxing": "./src/sports/boxing/index.ts"
+  }
+}
